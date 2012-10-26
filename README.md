@@ -1,5 +1,7 @@
 Usage
 -----
+
+```lua
   ---[[ use lua-odbc
   local dba = require "dba.lodbc"
   local cnn = dba.Connect('emptydb')
@@ -31,3 +33,4 @@ Usage
 
   qry:destroy()
   cnn:destroy()
+```
