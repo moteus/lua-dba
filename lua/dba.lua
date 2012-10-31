@@ -77,38 +77,39 @@ end}
 -- @field IGNORE_NAMED_PARAMS  не пытатся преобразовывать именованные параметры
 -- это необходимо для предотвращения изменения текста SQL перед выполнением
 -- при этом параметры будут поддерживатся только если проддерживается bind(будут использоваться только '?')
--- @usage# local sql = [[begin if :ID > 5 then select 5 else selct 0 end if end]]
+-- @usage
+-- local sql = [[begin if :ID > 5 then select 5 else selct 0 end if end]]
 -- qry:set_config('FORCE_REPLACE_PARAMS', true)
 -- qry:rows({ID=10}, print)
--- @usage# local sql = [[select 'hello :world']]
+-- @usage
+-- local sql = [[select 'hello :world']]
 -- qry:set_config('IGNORE_NAMED_PARAMS', true)
 -- qry:rows(print)
 
 --- callback функция для перебора запесей набора.
 -- <br> Если функция возвращает любое значение, то перебор прекращается
 -- и возвращенные(все) значения становятся результатом функции, которая осуществляет перебор.
+-- <br> Запись в функцию либо в виде набора параметров либо в виде таблицы.
 -- <br> В функцию может передаватся одна и таже таблица с разными значениями.
 -- @class function
 -- @name callback_function
--- @param row - очередная запись
--- @see Environment:drivers
--- @see Connection:tables
--- @see Connection:rows
--- @see Query:rows
+-- @param row or list - очередная запись
+-- @see Connection.Connection:each
+-- @see Query.Query:each
 
 --- Структура, описывающая отдельный драйвер.
 -- @class table
 -- @name driverinfo
 -- @field 1 название драйвера
 -- @field 2 набор параметров 
--- @see Environment:drivers
+-- @see lodbc.Environment.Environment:drivers
 
 --- Структура, описывающая отдельный драйвер
 -- @class table
 -- @name dsninfo
 -- @field 1 название DSN
 -- @field 2 название драйвера
--- @see Environment:datasources
+-- @see lodbc.Environment.Environment:datasources
 
 --- Уровни изоляции транзакций
 -- @class table

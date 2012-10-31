@@ -1,3 +1,7 @@
+--- Implement Connection class
+-- @class module
+-- @name Connection
+
 local utils  = require "dba.utils"
 local Query  = require "dba.Query"
 
@@ -5,6 +9,9 @@ local ERR_MSGS      = assert(utils.ERR_MSGS)
 local cursor_utils  = assert(utils.cursor_utils)
 local param_utils   = assert(utils.param_utils)
 local connect_utils = assert(utils.connect_utils)
+
+--- 
+-- @type Connection
 
 local Connection = {} Connection.__index = Connection
 local Connection_private = {}
@@ -16,7 +23,7 @@ do -- Connection ctor/dtor
 -- 
 -- @local
 -- 
--- <br> При создании так же создается объект Environment.
+-- <br> При создании так же создается объект `Environment`.
 -- 
 -- <br> Созданный объект не подключен к БД. Для подключения необходимо вызвать Connection:connect.
 -- <br> Параметры подключения могут быть установлены позже.
@@ -24,10 +31,10 @@ do -- Connection ctor/dtor
 -- @param own - [required] если true, то передается владение на env.
 --              (Этот объект уничтожается вместе с объектом Connection.)
 -- @param ... [optional] параметры для подключения к БД.
--- @return объект Connection
--- @see Environment:connection
--- @see Environment:connection
--- @see Connection:connect
+-- @return объект `Connection`
+-- @see Environment.Environment:connection
+-- @see Environment.Environment:connect
+-- @see Connection.Connection:connect
 function Connection:new(env, own, ...)
   assert(env)
   local henv = assert(env:handle())
@@ -92,14 +99,13 @@ function Connection_private:get_cnn_data(...)
 end
 
 --- Открывает подключение к БД.
--- 
--- <br> Параметры должны быть предоставлены в одном месте. Нельзя указать название БД в конструкторе, 
+--
+-- Параметры должны быть предоставлены в одном месте. Нельзя указать название БД в конструкторе, 
 -- а логин/пароль при открытии.
 -- @param ... [optional] параметры для подключения к БД.
 -- @return признак успешности подключения
--- @see Environment:connection
--- @see Environment:connection
--- @see Connection:new
+-- @see Environment.Environment:connection
+-- @see Environment.Environment:connect
 function Connection:connect(...)
   self:disconnect()
   if select('#', ...) > 0 then Connection_private.set_cnn_data(self, ...) end
@@ -115,7 +121,8 @@ function Connection:connect(...)
 end
 
 --- Закрывает подключение к БД.
--- <br> Объект остается доступным для дальнейшего использования
+--
+-- Объект остается доступным для дальнейшего использования
 -- @return true
 function Connection:disconnect()
   local cnn = self.private_.cnn
@@ -137,8 +144,7 @@ function Connection:disconnect()
   return true
 end
 
---- Возвращает признак подключения к БД
---
+--- Возвращает признак подключения к БД.
 --
 function Connection:connected()
   if not self.private_.cnn then return false end
@@ -151,9 +157,9 @@ end
 ------------------------------------------------------------------
 do -- Connection query 
 
---- Создается новый объект Query.
+--- Создает новый объект Query.
 -- 
--- @param sql    [optional]
+-- @param sql [optional]
 -- @param params [optional]
 -- @return объект Query
 -- @class function
@@ -165,10 +171,10 @@ function Connection:query(...)
   return Query:new(self, ...)
 end
 
---- Создается новый подготовленный объект Query.
+--- Создает новый подготовленный объект Query.
 -- 
 -- <br>Если prepare завершается с ошибкой - бъект Query уничтожается
--- @param sql    [required] текст запроса
+-- @param sql [required] текст запроса
 -- @param params [optional] таблица параметров для запроса
 -- @return объект Query
 -- @class function
@@ -190,9 +196,12 @@ end
 do -- Connection transaction 
 
 --- Подтверждает текущую транзакцию.
+--
 -- <br> не имеет смысла если autocommit=true
--- @see Connection:new
 -- @see Connection:rollback
+-- @see Connection:connect
+-- @see Environment.Environment:connection
+-- @see Environment.Environment:connect
 function Connection:commit()
   if self:connected() then
     return self.private_.cnn:commit()
@@ -202,9 +211,12 @@ end
 
 
 --- Отменяет текущую транзакцию.
+--
 -- <br> не имеет смысла если autocommit=true
--- @see Connection:new
 -- @see Connection:commit
+-- @see Connection:connect
+-- @see Environment.Environment:connection
+-- @see Environment.Environment:connect
 function Connection:rollback()
   if self:connected() then
     return self.private_.cnn:rollback()
@@ -214,14 +226,12 @@ end
 
 --- Устанавливает режим автоматической фиксации транзакций.
 --
---
 function Connection:set_autocommit(value)
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
   return self.private_.cnn:setautocommit(value)
 end
 
 --- Возвращает значение режима автоматической фиксации транзакций.
---
 --
 function Connection:get_autocommit()
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
@@ -311,7 +321,8 @@ function Connection_private:execute(sql, params)
 end
 
 --- Выполняет запрос который не должен возвращать Recordset.
--- <br> Если запрос вернул курсор, то он закрывается, но не производится откат транзакции
+--
+-- Если запрос вернул курсор, то он закрывается, но не производится откат транзакции
 -- @param sql [required] текст запроса
 -- @param params [optional] таблица параметров для запроса
 -- @return количество записей задействованных в запросе
@@ -337,18 +348,19 @@ do -- Connection iterator
 
 --- Итератор для перебора Recordset.
 --
--- <br> 
--- <br> Гарантируется закрытие курсора перед завершением вызова
--- @param sql    [required] текст запроса
+-- Гарантируется закрытие курсора перед завершением вызова
+-- @param sql [required] текст запроса
 -- @param params [optional] параметры для запроса
--- @param fn     [required] callback 
--- @see callback_function
--- @usage# local sql = 'select ID, NAME from Clients where NAME = :NAME'
+-- @param fn [required] callback 
+-- @see dba.callback_function
+-- @usage
+-- local sql = 'select ID, NAME from Clients where NAME = :NAME'
 -- db:each(sql, {NAME='ALEX'}, print)
 -- db:ieach(sql, {NAME='ALEX'}, function(r)print(r[1],r[2])end)
 -- db:neach(sql, {NAME='ALEX'}, function(r)print(r.ID,r.NAME)end)
 --
--- @usage# local alex_id = db:each('select ID, NAME from Clients', function(ID, NAME)
+-- @usage
+-- local alex_id = db:each('select ID, NAME from Clients', function(ID, NAME)
 --   if NAME == 'ALEX' then return ID end
 -- end)
 --
@@ -382,9 +394,10 @@ function Connection:teach(...) return Connection_private.each(self, 'an', ...) e
 -- <br> Итератор для generic for
 -- <br> Гарантируется закрытие курсора по достижении конца или при закрытии подключения.
 -- <br> Перебор продолжается до конца курсора или пока первое поле не будет равно NULL.
--- @param sql    [required] текст запроса
+-- @param sql [required] текст запроса
 -- @param params [optional] параметры для запроса
--- @usage# local sql = 'select ID, NAME from Clients where NAME = :NAME'
+-- @usage
+-- local sql = 'select ID, NAME from Clients where NAME = :NAME'
 -- local params = {NAME='ALEX'}
 -- for ID,NAME in db:rows(sql,params) do print(ID,NAME) end
 -- for r in db:irows(sql,params) do print(r[1],r[2]) end
@@ -461,8 +474,8 @@ end
 -- @param sql [required] текст запроса
 -- @param params [optional] таблица параметров для запроса
 -- @return массив записей
--- @see Environment:connection
 -- @see Connection:new
+-- @see Environment.Environment:connection
 function Connection:fetch_all(fetch_mode, sql, params)
   local cur, err = Connection_private.execute(self, sql, params)
   if not cur then return nil, err end

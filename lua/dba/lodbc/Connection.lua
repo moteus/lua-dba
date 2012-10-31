@@ -1,3 +1,7 @@
+--- Extend @{Connection.Connection|Connection} class with ODBC specific function
+-- @class module
+-- @name dba.lodbc.Connection
+
 local utils       = require "dba.utils"
 local Connection  = require "dba.Connection"
 
@@ -126,7 +130,7 @@ make_catalog_fn('column_privileges','columnprivileges')
 -- @param tcode [optional] numeric type code
 -- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:typeinfo
 
@@ -134,7 +138,7 @@ make_catalog_fn('column_privileges','columnprivileges')
 --
 -- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:tabletypes
 
@@ -142,7 +146,7 @@ make_catalog_fn('column_privileges','columnprivileges')
 --
 -- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:schemas
 
@@ -150,59 +154,60 @@ make_catalog_fn('column_privileges','columnprivileges')
 --
 -- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:catalogs
 
 ---
--- @param catalog   [optional] только если драйвер поддерживат каталоги
--- @param schema    [optional]
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional]
 -- @param tableName [optional]
--- @param unique    [optional] boolean
--- @param reserved  [optional] boolean
--- @param fn        [optional] callback
+-- @param unique [optional] boolean
+-- @param reserved [optional] boolean
+-- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:statistics 
+
 ---
--- @param catalog   [optional] только если драйвер поддерживат каталоги
--- @param schema    [optional]
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional]
 -- @param tableName [optional]
--- @param types     [optional]
--- @param fn        [optional] callback
+-- @param types [optional]
+-- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:tables 
 
 ---
--- @param catalog   [optional] только если драйвер поддерживат каталоги
--- @param schema    [optional]
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional]
 -- @param tableName [optional]
--- @param fn        [optional] callback
+-- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:table_privileges
 
 ---
--- @param catalog   [optional] только если драйвер поддерживат каталоги
--- @param schema    [optional]
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional]
 -- @param tableName [optional]
--- @param fn        [optional] callback
+-- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:primary_keys 
 
 ---
--- @param catalog   [optional] только если драйвер поддерживат каталоги
--- @param schema    [optional]
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional]
 -- @param tableName [optional]
--- @param fn        [optional] callback
+-- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:index_info 
 
@@ -215,7 +220,7 @@ make_catalog_fn('column_privileges','columnprivileges')
 -- @param ft [optional] foreign table   
 -- @param fn [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:crossreference
 
@@ -226,7 +231,7 @@ make_catalog_fn('column_privileges','columnprivileges')
 -- @param columnName       [optional] 
 -- @param fn               [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:columns 
 
@@ -236,7 +241,7 @@ make_catalog_fn('column_privileges','columnprivileges')
 -- @param tableName        [optional] 
 -- @param fn               [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:special_columns 
 
@@ -246,7 +251,7 @@ make_catalog_fn('column_privileges','columnprivileges')
 -- @param procName         [optional]  
 -- @param fn               [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:procedures 
 
@@ -257,7 +262,7 @@ make_catalog_fn('column_privileges','columnprivileges')
 -- @param colName          [optional]   
 -- @param fn               [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:procedure_columns 
 
@@ -268,7 +273,7 @@ make_catalog_fn('column_privileges','columnprivileges')
 -- @param columnName       [optional] 
 -- @param fn               [optional] callback
 -- @return список записей
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Connection:column_privileges 
 
@@ -413,7 +418,7 @@ for i = 1, #TRANSACTION_LEVEL do TRANSACTION_LEVEL[ TRANSACTION_LEVEL[i] ] = i e
 --- Проверяет поддерживает ли драйвер транзакции.
 -- <br> Возможна проверка определенного уровня изоляции
 -- @param lvl [optional] уровень изоляции транзакции (число/строка)
--- @see transaction_level
+-- @see dba.transaction_level
 function Connection:supports_transaction(lvl)
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
   if lvl == nil then return self.private_.cnn:supportsTransactions() end

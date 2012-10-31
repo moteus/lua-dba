@@ -1,8 +1,15 @@
+--- Implement query class
+-- @class module
+-- @name Query
+
 local utils  = require "dba.utils"
 
 local ERR_MSGS     = assert(utils.ERR_MSGS)
 local cursor_utils = assert(utils.cursor_utils)
 local param_utils  = assert(utils.param_utils)
+
+--- 
+-- @type Query
 
 local Query = {} Query.__index = Query
 local Query_private = {}
@@ -56,8 +63,8 @@ end
 
 --- ”ничтожает объект Query
 --
--- @see Connection:query
--- @see Connection:prepare
+-- @see Connection.Connection:query
+-- @see Connection.Connection:prepare
 function Query:destroy()
   self:close()
   if self.private_.stmt then
@@ -68,6 +75,8 @@ function Query:destroy()
   return true
 end
 
+--- «акрывает открытый курсор.
+-- 
 function Query:close()
   if self:closed() then 
     self.private_.cur = nil
@@ -78,12 +87,16 @@ function Query:close()
   self.private_.cur = nil
 end
 
+--- ¬озвращает статус курсора.
+-- 
 function Query:closed()
   local cur = self.private_.cur
   if not cur then return true end
   return cursor_utils.closed(cur)
 end
 
+--- ¬озвращает статус курсора.
+-- 
 function Query:opened()
   return not self:closed()
 end
@@ -356,9 +369,9 @@ end
 
 --- ќткрывает курсор.
 --
--- @param sql   [optional] текст запроса
+-- @param sql [optional] текст запроса
 -- @param param [optional] параметры запроса
--- @see Query:opened
+-- @see Query:closed
 -- @see Query:close
 function Query:open(sql, param)
   -- запрос выполн€етс€ всегда
@@ -382,11 +395,11 @@ end
 --- ¬ыполн€ет запрос который не должен возвращать Recordset.
 --
 -- <br> ≈сли запрос вернул курсор, то он закрываетс€, но не производитс€ откат транзакции
--- @param sql    [optional] текст запроса
+-- @param sql [optional] текст запроса
 -- @param params [optional] параметры дл€ запроса
 -- @return количество записей задействованных в запросе,
--- @see Connection:query
--- @see Connection:prepare
+-- @see Connection.Connection:query
+-- @see Connection.Connection:prepare
 -- @see Query:set_sql
 -- @see Query:prepare
 function Query:exec(sql, params)
@@ -419,7 +432,7 @@ do -- Query iterator
 -- @param params    [optional] параметры дл€ запроса
 -- @param autoclose [optional] признак того что запрос должен быть закрыт перез завершением функции.
 -- @param fn        [required] callback 
--- @see callback_function
+-- @see dba.callback_function
 -- @class function
 -- @name Query:each
 
@@ -593,10 +606,10 @@ do -- Query multiresultset
 -- @return ничего если нет следующего Recordset
 -- @return курсор если есть следующий Recordset
 -- @see Query:open
--- @see Query:is_opened
+-- @see Query:closed
 -- @see Query:close
--- @see Query:fetch
--- @see Query:ifetch
+-- @see Query:each
+-- @see Query:rows
 function Query:next_resultset() 
   if self:closed() then return nil, ERR_MSGS.query_not_opened end
   if not self.private_.cur.nextresultset then return nil, ERR_MSGS.not_support end

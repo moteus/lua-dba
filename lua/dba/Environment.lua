@@ -8,15 +8,18 @@ local Connection = require "dba.Connection"
 local OPTIONS       = assert(utils.OPTIONS)
 local ERR_MSGS      = assert(utils.ERR_MSGS)
 
+--- 
+-- @type Environment
+
 local Environment = {} Environment.__index = Environment
 local Environment_private = {}
 
 ------------------------------------------------------------------
 do -- Environment ctor/dtor
 
---- Создает новый объект environment.
+--- Создает новый объект `Environment`.
 -- 
--- @return объект Environment
+-- @return объект `Environment`
 function Environment:new(env)
   local t = setmetatable({
     private_ = {
@@ -27,7 +30,7 @@ function Environment:new(env)
   return t
 end
 
---- Уничтожает объект environment.
+--- Уничтожает объект `Environment`.
 -- 
 -- <br> Если уничтожаемый объект использовался для распределения 
 -- подключений и они не уничтожены, то вызывается исключение
@@ -86,7 +89,7 @@ end
 -- @name Environment:connect
 -- @see Environment:connection
 -- @see Environment:connection
--- @see Connection:connect
+-- @see Connection.Connection:connect
 
 function Environment:connect(...)
   local cnn, err = self:connection(...)
