@@ -225,53 +225,53 @@ make_catalog_fn('column_privileges','columnprivileges')
 -- @name Connection:crossreference
 
 ---
--- @param catalog          [optional] только если драйвер поддерживат каталоги
--- @param schema           [optional] 
--- @param tableName        [optional] 
--- @param columnName       [optional] 
--- @param fn               [optional] callback
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional] 
+-- @param tableName [optional] 
+-- @param columnName [optional] 
+-- @param fn [optional] callback
 -- @return список записей
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:columns 
 
 ---
--- @param catalog          [optional] только если драйвер поддерживат каталоги
--- @param schema           [optional] 
--- @param tableName        [optional] 
--- @param fn               [optional] callback
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional] 
+-- @param tableName [optional] 
+-- @param fn [optional] callback
 -- @return список записей
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:special_columns 
 
 ---
--- @param catalog          [optional] только если драйвер поддерживат каталоги
--- @param schema           [optional] 
--- @param procName         [optional]  
--- @param fn               [optional] callback
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional] 
+-- @param procName [optional]  
+-- @param fn [optional] callback
 -- @return список записей
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:procedures 
 
 ---
--- @param catalog          [optional] только если драйвер поддерживат каталоги
--- @param schema           [optional] 
--- @param procName         [optional]   
--- @param colName          [optional]   
--- @param fn               [optional] callback
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional] 
+-- @param procName [optional]   
+-- @param colName [optional]   
+-- @param fn [optional] callback
 -- @return список записей
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:procedure_columns 
 
 ---
--- @param catalog          [optional] только если драйвер поддерживат каталоги
--- @param schema           [optional] 
--- @param tableName        [optional] 
--- @param columnName       [optional] 
--- @param fn               [optional] callback
+-- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param schema [optional] 
+-- @param tableName [optional] 
+-- @param columnName [optional] 
+-- @param fn [optional] callback
 -- @return список записей
 -- @see dba.callback_function
 -- @class function

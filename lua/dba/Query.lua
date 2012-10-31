@@ -17,15 +17,14 @@ local Query_private = {}
 ------------------------------------------------------------------
 do -- ctor/dtor/close/open
 
---- Создается новый объект Query.
+--- Создается новый объект @{Query.Query|Query}.
 -- 
 -- @local
--- @param cnn    [required] открытый объект Connection
--- @param sql    [optional] текст запроса
+--
+-- @param cnn [required] открытый объект Connection
+-- @param sql [optional] текст запроса
 -- @param params [optional] таблица параметров для запроса
--- @return объект Query
--- @class function
--- @name Connection:query
+-- @return объект @{Query.Query|Query}
 function Query:new(cnn, sql, params)
   assert(cnn)
   local hcnn = assert(cnn:handle())
@@ -218,6 +217,7 @@ function Query_private:execute(sql, params)
 end
 
 --- Устанавливает текст запроса.
+--
 -- <br> После изменения SQL все параметры становятся невалидными.
 -- <br> Запрос не должен быть открыт или подготовлен.
 -- @param sql текст запроса
@@ -257,6 +257,7 @@ function Query:set_sql(sql)
 end
 
 --- Присваивает значение параметру.
+--
 -- <br> В качестве значения можно указывать 2 специальные константы PARAM_NULL и PARAM_DEFAULT.
 -- @param paramID номер параметра (начиная с 1) или имя параметра
 -- @param value   значение параметра. 
@@ -264,17 +265,19 @@ end
 -- @name Query:bind[1]
 
 --- Присваивает значение параметру.
+--
 -- <br> Эта функция может использоватся только если параметризованные запросы поддерживается драйвером.
 -- <br> В качестве значения можно указывать 2 специальные константы PARAM_NULL и PARAM_DEFAULT.
 -- @param paramID   номер параметра (начиная с 1) или имя параметра
 -- @param func  Функция используется для получения данных в момент выполнения запроса.
---            <br>Для строк может выдавать данные порциями. Конец данных наступает либо в момент возврата nil если 
---            не использовался параметр len, либо после передачи len байт если был указан параметр len.
+-- <br>Для строк может выдавать данные порциями. Конец данных наступает либо в момент возврата nil если 
+-- не использовался параметр len, либо после передачи len байт если был указан параметр len.
 -- @param len [optional] реальная длинна данных.
 -- @class function 
 -- @name Query:bind[2]
 
 --- Присваивает значение параметрам.
+--
 -- @param params - таблица параметров(название/номер => значение)
 -- @class function 
 -- @name Query:bind[3]
@@ -428,10 +431,10 @@ do -- Query iterator
 --- Итератор для перебора Recordset.
 --
 -- <br> 
--- @param sql       [optional] текст запроса
--- @param params    [optional] параметры для запроса
+-- @param sql [optional] текст запроса
+-- @param params [optional] параметры для запроса
 -- @param autoclose [optional] признак того что запрос должен быть закрыт перез завершением функции.
--- @param fn        [required] callback 
+-- @param fn [required] callback 
 -- @see dba.callback_function
 -- @class function
 -- @name Query:each
@@ -469,7 +472,7 @@ function Query:teach(...) return Query_private.each(self, 'an', ...) end
 --- Итератор для перебора Recordset.
 --
 -- <br> Итератор для generic for
--- @param sql    [optional] текст запроса
+-- @param sql [optional] текст запроса
 -- @param params [optional] параметры для запроса
 --
 -- @class function

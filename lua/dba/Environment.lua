@@ -19,6 +19,8 @@ do -- Environment ctor/dtor
 
 --- Создает новый объект `Environment`.
 -- 
+-- @local
+--
 -- @return объект `Environment`
 function Environment:new(env)
   local t = setmetatable({
