@@ -1,4 +1,4 @@
---- Extend @{Environment.Environment.s|Environment} class with ODBC specific function
+--- Extend @{Environment.Environment|Environment} class with ODBC specific function
 -- @class module
 -- @name lodbc.Environment
 
@@ -13,7 +13,7 @@ local ERR_MSGS      = assert(utils.ERR_MSGS)
 -- @return список драйверов 
 -- @see dba.callback_function
 -- @see dba.driverinfo 
--- @see @{Environment.Environment|Environment}
+-- @see Environment.Environment
 function Environment:drivers(fn)
   assert(self.private_.env)
   if not self.private_.env.getdrivers then return nil, ERR_MSGS.not_support end

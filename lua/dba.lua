@@ -67,6 +67,25 @@ return {load = function (ctor)
   return lib
 end}
 
+--- Создает объект @{Environment.Environment|Environment}.
+-- 
+-- @class function
+-- @name Environment
+
+--- Создает объект @{Connection.Connection|Connection}.
+-- 
+-- При этом для этого подключения создается собственный объект @{Environment.Environment|Environment}
+-- который уничтажается вместе с объектом @{Connection.Connection|Connection}.
+-- @class function
+-- @name Connection
+
+--- Создает объект @{Connection.Connection|Connection} и подключает его к БД.
+-- 
+-- Если не удалось подключится к БД то объeкт @{Connection.Connection|Connection} уничтожается.
+-- @class function
+-- @name Connect
+
+
 --- Таблица параметров библиотеки.
 -- Каждый параметр может быть установлен на уровне Environment, Connection или Query
 --

@@ -1,6 +1,6 @@
 --- Extend @{Connection.Connection|Connection} class with ODBC specific function
 -- @class module
--- @name dba.lodbc.Connection
+-- @name lodbc.Connection
 
 local utils       = require "dba.utils"
 local Connection  = require "dba.Connection"
