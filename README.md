@@ -3,7 +3,7 @@ Usage
 
 ```lua
   ---[[ use lua-odbc
-  local dba = require "dba.lodbc"
+  local dba = require "dba.odbc"
   local cnn = dba.Connect('emptydb')
   --]]
 
