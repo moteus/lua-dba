@@ -183,6 +183,10 @@ function test_txn()
   assert_equal(CNN_ROWS, to_n(cnn:first_value("select count(*) from Agent")))
 end
 
+function test_rowsaffected()
+  assert_equal(CNN_ROWS, to_n(cnn:first_value("select count(*) from Agent")))
+end
+
 local TEST_NAME = 'Query'
 if _VERSION >= 'Lua 5.2' then  _ENV = lunit.module(TEST_NAME,'seeall')
 else module( TEST_NAME, package.seeall, lunit.testcase ) end
@@ -190,7 +194,7 @@ else module( TEST_NAME, package.seeall, lunit.testcase ) end
 local cnn, qry
 
 function setup()
-  local cnn = assert(CreateConnect[CNN_TYPE]())
+  cnn = assert(CreateConnect[CNN_TYPE]())
   init_db(cnn)
 end
 
@@ -199,8 +203,81 @@ function teardown()
   if cnn then cnn:destroy() end
 end
 
-function test()
-  
+function test_create()
+  local sql = "select ID, Name from Agent order by ID"
+  local n
+  local function do_test(ID, Name) 
+    n = n + 1
+    assert_equal(n, to_n(ID))
+  end
+
+  n = 0
+  qry = assert(cnn:query())
+  qry:each(sql, do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql))
+  qry:each(do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  sql = "select ID, Name from Agent where 555=cast(:ID as INTEGER) order by ID"
+  local par = {ID = 555}
+
+  n = 0
+  qry = assert(cnn:query())
+  qry:each(sql, par, do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql))
+  qry:each(par, do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql, par))
+  qry:each(do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+end
+
+function test_prepare()
+  local sql = "select ID, Name from Agent order by ID"
+  local n
+  local function do_test(ID, Name) 
+    n = n + 1
+    assert_equal(n, to_n(ID))
+  end
+
+  n = 0
+  qry = assert(cnn:prepare(sql))
+  qry:each(do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  sql = "select ID, Name from Agent where 555 = cast(:ID as INTEGER) order by ID"
+  local par = {ID = 555}
+
+  n = 0
+  qry = assert(cnn:prepare(sql))
+  qry:each(par, do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:prepare(sql, par))
+  qry:each(do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+end
+
+function test_destroy()
+  qry = assert(cnn:query())
+  assert_error(function() cnn:destroy() end)
 end
 
 for _, str in ipairs{'lsql', 'odbc'} do

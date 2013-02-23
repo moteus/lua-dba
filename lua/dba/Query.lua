@@ -100,6 +100,12 @@ function Query:opened()
   return not self:closed()
 end
 
+--- Возвращает плотформозависимый дескриптор.
+-- 
+-- @return handle
+function Query:handle()
+  return self.private_.stmt
+end
 
 end
 ------------------------------------------------------------------
@@ -449,13 +455,23 @@ function Query_private:each(fetch_mode, ...)
     return cursor_utils.foreach(self.private_.cur, fetch_mode, ...)
   end
 
-  local ok, err, n
-  local sql, params = ...
-  if (type(sql) == 'string') or (type(sql) == 'table') then 
-    n = 3
-    if type(params) ~= 'table' then params,n = nil,2 end
-    ok, err = self:open(sql, params)
-  else ok, err = self:open() n = 1 end
+  local n = 1
+  local sql, params  = ...
+  if type(sql) == 'string' then
+    n = n + 1
+    if type(params) == 'table' then 
+      n = n + 1
+    else 
+      params = nil
+    end
+  elseif type(sql) == 'table' then
+    params = nil
+    n = n + 1
+  else 
+    sql, params = nil
+  end
+
+  local ok, err = self:open(sql, params)
   if not ok then return nil, err end
 
   return cursor_utils.foreach(self.private_.cur, fetch_mode, select(n, ...))

@@ -181,10 +181,14 @@ end
 -- @name Connection:prepare
 
 --
-function Connection:prepare(...)
-  local q, err = self:query(...)
+function Connection:prepare(sql,params)
+  assert(type(sql) == 'string')
+  assert(params == nil or type(params) == 'table')
+  local q, err = self:query(sql)
   if not q then return nil, err end
   local ok ok, err = q:prepare()
+  if not ok then q:destroy() return nil, err end
+  if params then ok, err = q:bind(params) end
   if not ok then q:destroy() return nil, err end
   return q
 end
