@@ -17,11 +17,11 @@ local Environment_private = {}
 ------------------------------------------------------------------
 do -- Environment ctor/dtor
 
---- Создает новый объект `Environment`.
+--- РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ `Environment`.
 -- 
 -- @local
 --
--- @return объект `Environment`
+-- @return РѕР±СЉРµРєС‚ `Environment`
 function Environment:new(env)
   local t = setmetatable({
     private_ = {
@@ -32,10 +32,10 @@ function Environment:new(env)
   return t
 end
 
---- Уничтожает объект `Environment`.
+--- РЈРЅРёС‡С‚РѕР¶Р°РµС‚ РѕР±СЉРµРєС‚ `Environment`.
 -- 
--- <br> Если уничтожаемый объект использовался для распределения 
--- подключений и они не уничтожены, то вызывается исключение
+-- <br> Р•СЃР»Рё СѓРЅРёС‡С‚РѕР¶Р°РµРјС‹Р№ РѕР±СЉРµРєС‚ РёСЃРїРѕР»СЊР·РѕРІР°Р»СЃСЏ РґР»СЏ СЂР°СЃРїСЂРµРґРµР»РµРЅРёСЏ 
+-- РїРѕРґРєР»СЋС‡РµРЅРёР№ Рё РѕРЅРё РЅРµ СѓРЅРёС‡С‚РѕР¶РµРЅС‹, С‚Рѕ РІС‹Р·С‹РІР°РµС‚СЃСЏ РёСЃРєР»СЋС‡РµРЅРёРµ
 function Environment:destroy()
   local env = self.private_.env
   if not env then return true end
@@ -44,7 +44,7 @@ function Environment:destroy()
   return true
 end
 
---- Возвращает плотформозависимый дескриптор.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїР»РѕС‚С„РѕСЂРјРѕР·Р°РІРёСЃРёРјС‹Р№ РґРµСЃРєСЂРёРїС‚РѕСЂ.
 -- 
 -- @return handle
 function Environment:handle()
@@ -57,26 +57,26 @@ end
 ------------------------------------------------------------------
 do -- Environment connection
 
---- Создает новый объект Connection.
+--- РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ Connection.
 --
 -- @class function
 -- @name Environment:connection
--- @param dsn [optional]  название DSN
+-- @param dsn [optional]  РЅР°Р·РІР°РЅРёРµ DSN
 -- @param login [optional] 
 -- @param password [optional] 
 -- @param autocommit [optional] 
--- @return объект Connection
+-- @return РѕР±СЉРµРєС‚ Connection
 -- @usage local db = env:connection('demo','DBA','sql',false)
--- @usage local db = env:connection('demo',false) --Логин и пароль опущены, но autocommit установлен
+-- @usage local db = env:connection('demo',false) --Р›РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ РѕРїСѓС‰РµРЅС‹, РЅРѕ autocommit СѓСЃС‚Р°РЅРѕРІР»РµРЅ
 
---- Создает новый объект Connection.
+--- РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ Connection.
 -- 
 -- @class function
 -- @name Environment:connection
--- @param params таблица для формирования строки подключения
+-- @param params С‚Р°Р±Р»РёС†Р° РґР»СЏ С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ СЃС‚СЂРѕРєРё РїРѕРґРєР»СЋС‡РµРЅРёСЏ
 -- @param autocommit
--- @return объект Connection 
--- @return строка подключения
+-- @return РѕР±СЉРµРєС‚ Connection 
+-- @return СЃС‚СЂРѕРєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ
 -- @usage local db = env:connection{DSN='demo',UID='DBA',PWD='sql'}
 
 --
@@ -84,9 +84,9 @@ function Environment:connection(...)
   return Connection:new(self, false, ...)
 end
 
---- Создает новый объект Connection и открывает подключение.
--- <br>Эквивалентно cnn = env:connection(...) cnn:open().
--- <br>Если не удалось подключится к БД, то объект Connection уничтожается.
+--- РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ Connection Рё РѕС‚РєСЂС‹РІР°РµС‚ РїРѕРґРєР»СЋС‡РµРЅРёРµ.
+-- <br>Р­РєРІРёРІР°Р»РµРЅС‚РЅРѕ cnn = env:connection(...) cnn:open().
+-- <br>Р•СЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ РїРѕРґРєР»СЋС‡РёС‚СЃСЏ Рє Р‘Р”, С‚Рѕ РѕР±СЉРµРєС‚ Connection СѓРЅРёС‡С‚РѕР¶Р°РµС‚СЃСЏ.
 -- @class function
 -- @name Environment:connect
 -- @see Environment:connection

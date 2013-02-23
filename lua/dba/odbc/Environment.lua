@@ -7,10 +7,10 @@ local Environment = require "dba.Environment"
 
 local ERR_MSGS      = assert(utils.ERR_MSGS)
 
---- Возвращает список установленных в системе драйверов ODBC
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹С… РІ СЃРёСЃС‚РµРјРµ РґСЂР°Р№РІРµСЂРѕРІ ODBC
 -- 
 -- @param fn [optional] callback 
--- @return список драйверов 
+-- @return СЃРїРёСЃРѕРє РґСЂР°Р№РІРµСЂРѕРІ 
 -- @see dba.callback_function
 -- @see dba.driverinfo 
 -- @see Environment.Environment
@@ -21,10 +21,10 @@ function Environment:drivers(fn)
   return self.private_.env:drivers()
 end
 
---- Возвращает массив DSN 
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РјР°СЃСЃРёРІ DSN 
 -- 
 -- @param fn [optional] callback 
--- @return - массив таблиц (dsninfo)
+-- @return - РјР°СЃСЃРёРІ С‚Р°Р±Р»РёС† (dsninfo)
 -- @see dba.callback_function
 -- @see dba.dsninfo 
 function Environment:datasources(fn)

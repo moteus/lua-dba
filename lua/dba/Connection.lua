@@ -19,19 +19,19 @@ local Connection_private = {}
 ------------------------------------------------------------------
 do -- Connection ctor/dtor
 
---- Создает новый объект Connection.
+--- РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ Connection.
 -- 
 -- @local
 -- 
--- <br> При создании так же создается объект `Environment`.
+-- <br> РџСЂРё СЃРѕР·РґР°РЅРёРё С‚Р°Рє Р¶Рµ СЃРѕР·РґР°РµС‚СЃСЏ РѕР±СЉРµРєС‚ `Environment`.
 -- 
--- <br> Созданный объект не подключен к БД. Для подключения необходимо вызвать Connection:connect.
--- <br> Параметры подключения могут быть установлены позже.
--- @param env - [required] объект Environment 
--- @param own - [required] если true, то передается владение на env.
---              (Этот объект уничтожается вместе с объектом Connection.)
--- @param ... [optional] параметры для подключения к БД.
--- @return объект `Connection`
+-- <br> РЎРѕР·РґР°РЅРЅС‹Р№ РѕР±СЉРµРєС‚ РЅРµ РїРѕРґРєР»СЋС‡РµРЅ Рє Р‘Р”. Р”Р»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ РЅРµРѕР±С…РѕРґРёРјРѕ РІС‹Р·РІР°С‚СЊ Connection:connect.
+-- <br> РџР°СЂР°РјРµС‚СЂС‹ РїРѕРґРєР»СЋС‡РµРЅРёСЏ РјРѕРіСѓС‚ Р±С‹С‚СЊ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹ РїРѕР·Р¶Рµ.
+-- @param env - [required] РѕР±СЉРµРєС‚ Environment 
+-- @param own - [required] РµСЃР»Рё true, С‚Рѕ РїРµСЂРµРґР°РµС‚СЃСЏ РІР»Р°РґРµРЅРёРµ РЅР° env.
+--              (Р­С‚РѕС‚ РѕР±СЉРµРєС‚ СѓРЅРёС‡С‚РѕР¶Р°РµС‚СЃСЏ РІРјРµСЃС‚Рµ СЃ РѕР±СЉРµРєС‚РѕРј Connection.)
+-- @param ... [optional] РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Р‘Р”.
+-- @return РѕР±СЉРµРєС‚ `Connection`
 -- @see Environment.Environment:connection
 -- @see Environment.Environment:connect
 -- @see Connection.Connection:connect
@@ -59,10 +59,10 @@ function Connection:new(env, own, ...)
   return t;
 end
 
---- Уничтожает объект Connection.
+--- РЈРЅРёС‡С‚РѕР¶Р°РµС‚ РѕР±СЉРµРєС‚ Connection.
 -- 
--- <br> Если уничтожаемый объект использовался для распределения 
--- запросов и они не уничтожены, то вызывается исключение
+-- <br> Р•СЃР»Рё СѓРЅРёС‡С‚РѕР¶Р°РµРјС‹Р№ РѕР±СЉРµРєС‚ РёСЃРїРѕР»СЊР·РѕРІР°Р»СЃСЏ РґР»СЏ СЂР°СЃРїСЂРµРґРµР»РµРЅРёСЏ 
+-- Р·Р°РїСЂРѕСЃРѕРІ Рё РѕРЅРё РЅРµ СѓРЅРёС‡С‚РѕР¶РµРЅС‹, С‚Рѕ РІС‹Р·С‹РІР°РµС‚СЃСЏ РёСЃРєР»СЋС‡РµРЅРёРµ
 function Connection:destroy()
   self:disconnect()
   if self.private_.cnn then
@@ -76,7 +76,7 @@ function Connection:destroy()
   return true
 end
 
---- Возвращает плотформозависимый дескриптор.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїР»РѕС‚С„РѕСЂРјРѕР·Р°РІРёСЃРёРјС‹Р№ РґРµСЃРєСЂРёРїС‚РѕСЂ.
 -- 
 -- @return handle
 function Connection:handle()
@@ -98,12 +98,12 @@ function Connection_private:get_cnn_data(...)
   return utils.unpack_n(self.private_.cnn_data)
 end
 
---- Открывает подключение к БД.
+--- РћС‚РєСЂС‹РІР°РµС‚ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє Р‘Р”.
 --
--- Параметры должны быть предоставлены в одном месте. Нельзя указать название БД в конструкторе, 
--- а логин/пароль при открытии.
--- @param ... [optional] параметры для подключения к БД.
--- @return признак успешности подключения
+-- РџР°СЂР°РјРµС‚СЂС‹ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РїСЂРµРґРѕСЃС‚Р°РІР»РµРЅС‹ РІ РѕРґРЅРѕРј РјРµСЃС‚Рµ. РќРµР»СЊР·СЏ СѓРєР°Р·Р°С‚СЊ РЅР°Р·РІР°РЅРёРµ Р‘Р” РІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ, 
+-- Р° Р»РѕРіРёРЅ/РїР°СЂРѕР»СЊ РїСЂРё РѕС‚РєСЂС‹С‚РёРё.
+-- @param ... [optional] РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Р‘Р”.
+-- @return РїСЂРёР·РЅР°Рє СѓСЃРїРµС€РЅРѕСЃС‚Рё РїРѕРґРєР»СЋС‡РµРЅРёСЏ
 -- @see Environment.Environment:connection
 -- @see Environment.Environment:connect
 function Connection:connect(...)
@@ -120,9 +120,9 @@ function Connection:connect(...)
   return true
 end
 
---- Закрывает подключение к БД.
+--- Р—Р°РєСЂС‹РІР°РµС‚ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє Р‘Р”.
 --
--- Объект остается доступным для дальнейшего использования
+-- РћР±СЉРµРєС‚ РѕСЃС‚Р°РµС‚СЃСЏ РґРѕСЃС‚СѓРїРЅС‹Рј РґР»СЏ РґР°Р»СЊРЅРµР№С€РµРіРѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ
 -- @return true
 function Connection:disconnect()
   local cnn = self.private_.cnn
@@ -144,7 +144,7 @@ function Connection:disconnect()
   return true
 end
 
---- Возвращает признак подключения к БД.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРёР·РЅР°Рє РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Р‘Р”.
 --
 function Connection:connected()
   if not self.private_.cnn then return false end
@@ -157,11 +157,11 @@ end
 ------------------------------------------------------------------
 do -- Connection query 
 
---- Создает новый объект Query.
+--- РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ Query.
 -- 
 -- @param sql [optional]
 -- @param params [optional]
--- @return объект Query
+-- @return РѕР±СЉРµРєС‚ Query
 -- @class function
 -- @name Connection:query
 
@@ -171,12 +171,12 @@ function Connection:query(...)
   return Query:new(self, ...)
 end
 
---- Создает новый подготовленный объект Query.
+--- РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РїРѕРґРіРѕС‚РѕРІР»РµРЅРЅС‹Р№ РѕР±СЉРµРєС‚ Query.
 -- 
--- <br>Если prepare завершается с ошибкой - бъект Query уничтожается
--- @param sql [required] текст запроса
--- @param params [optional] таблица параметров для запроса
--- @return объект Query
+-- <br>Р•СЃР»Рё prepare Р·Р°РІРµСЂС€Р°РµС‚СЃСЏ СЃ РѕС€РёР±РєРѕР№ - Р±СЉРµРєС‚ Query СѓРЅРёС‡С‚РѕР¶Р°РµС‚СЃСЏ
+-- @param sql [required] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] С‚Р°Р±Р»РёС†Р° РїР°СЂР°РјРµС‚СЂРѕРІ РґР»СЏ Р·Р°РїСЂРѕСЃР°
+-- @return РѕР±СЉРµРєС‚ Query
 -- @class function
 -- @name Connection:prepare
 
@@ -199,9 +199,9 @@ end
 ------------------------------------------------------------------
 do -- Connection transaction 
 
---- Подтверждает текущую транзакцию.
+--- РџРѕРґС‚РІРµСЂР¶РґР°РµС‚ С‚РµРєСѓС‰СѓСЋ С‚СЂР°РЅР·Р°РєС†РёСЋ.
 --
--- <br> не имеет смысла если autocommit=true
+-- <br> РЅРµ РёРјРµРµС‚ СЃРјС‹СЃР»Р° РµСЃР»Рё autocommit=true
 -- @see Connection:rollback
 -- @see Connection:connect
 -- @see Environment.Environment:connection
@@ -214,9 +214,9 @@ function Connection:commit()
 end
 
 
---- Отменяет текущую транзакцию.
+--- РћС‚РјРµРЅСЏРµС‚ С‚РµРєСѓС‰СѓСЋ С‚СЂР°РЅР·Р°РєС†РёСЋ.
 --
--- <br> не имеет смысла если autocommit=true
+-- <br> РЅРµ РёРјРµРµС‚ СЃРјС‹СЃР»Р° РµСЃР»Рё autocommit=true
 -- @see Connection:commit
 -- @see Connection:connect
 -- @see Environment.Environment:connection
@@ -228,14 +228,14 @@ function Connection:rollback()
   return nil, ERR_MSGS.cnn_not_opened
 end
 
---- Устанавливает режим автоматической фиксации транзакций.
+--- РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂРµР¶РёРј Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕР№ С„РёРєСЃР°С†РёРё С‚СЂР°РЅР·Р°РєС†РёР№.
 --
 function Connection:set_autocommit(value)
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
   return self.private_.cnn:setautocommit(value)
 end
 
---- Возвращает значение режима автоматической фиксации транзакций.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ СЂРµР¶РёРјР° Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕР№ С„РёРєСЃР°С†РёРё С‚СЂР°РЅР·Р°РєС†РёР№.
 --
 function Connection:get_autocommit()
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
@@ -267,8 +267,8 @@ function Connection_private:execute(sql, params)
   end
 
   if Connection_private.need_replace_params(self) then
-    -- Подставляем параметры и выполняем
-    -- Поддерживаются только именованные параметры
+    -- РџРѕРґСЃС‚Р°РІР»СЏРµРј РїР°СЂР°РјРµС‚СЂС‹ Рё РІС‹РїРѕР»РЅСЏРµРј
+    -- РџРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ С‚РѕР»СЊРєРѕ РёРјРµРЅРѕРІР°РЅРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
     if self:get_config('IGNORE_NAMED_PARAMS') then
       return nil, ERR_MSGS.deny_named_params
     end
@@ -278,9 +278,9 @@ function Connection_private:execute(sql, params)
     return connect_utils.execute(cnn, psql)
   end
 
-  -- Драйвер поддерживает явные statement
+  -- Р”СЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ СЏРІРЅС‹Рµ statement
 
-  -- Если разрешены именованные параметры, то преобразуем запрос
+  -- Р•СЃР»Рё СЂР°Р·СЂРµС€РµРЅС‹ РёРјРµРЅРѕРІР°РЅРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹, С‚Рѕ РїСЂРµРѕР±СЂР°Р·СѓРµРј Р·Р°РїСЂРѕСЃ
   local psql, plst 
   if not self:get_config('IGNORE_NAMED_PARAMS') then
     psql, plst = param_utils.translate_params(sql)
@@ -290,7 +290,7 @@ function Connection_private:execute(sql, params)
   local stmt, err = cnn:statement()
   if not stmt then return nil, err end
 
-  if plst and next(plst) then -- есть именованные параметры
+  if plst and next(plst) then -- РµСЃС‚СЊ РёРјРµРЅРѕРІР°РЅРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
     for i, pname in ipairs(plst) do
       local val = params[pname]
       if val == nil then
@@ -324,12 +324,12 @@ function Connection_private:execute(sql, params)
   return ok
 end
 
---- Выполняет запрос который не должен возвращать Recordset.
+--- Р’С‹РїРѕР»РЅСЏРµС‚ Р·Р°РїСЂРѕСЃ РєРѕС‚РѕСЂС‹Р№ РЅРµ РґРѕР»Р¶РµРЅ РІРѕР·РІСЂР°С‰Р°С‚СЊ Recordset.
 --
--- Если запрос вернул курсор, то он закрывается, но не производится откат транзакции
--- @param sql [required] текст запроса
--- @param params [optional] таблица параметров для запроса
--- @return количество записей задействованных в запросе
+-- Р•СЃР»Рё Р·Р°РїСЂРѕСЃ РІРµСЂРЅСѓР» РєСѓСЂСЃРѕСЂ, С‚Рѕ РѕРЅ Р·Р°РєСЂС‹РІР°РµС‚СЃСЏ, РЅРѕ РЅРµ РїСЂРѕРёР·РІРѕРґРёС‚СЃСЏ РѕС‚РєР°С‚ С‚СЂР°РЅР·Р°РєС†РёРё
+-- @param sql [required] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] С‚Р°Р±Р»РёС†Р° РїР°СЂР°РјРµС‚СЂРѕРІ РґР»СЏ Р·Р°РїСЂРѕСЃР°
+-- @return РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїРёСЃРµР№ Р·Р°РґРµР№СЃС‚РІРѕРІР°РЅРЅС‹С… РІ Р·Р°РїСЂРѕСЃРµ
 -- @class function
 -- @name Connection:exec
 
@@ -350,11 +350,11 @@ end
 ------------------------------------------------------------------
 do -- Connection iterator
 
---- Итератор для перебора Recordset.
+--- РС‚РµСЂР°С‚РѕСЂ РґР»СЏ РїРµСЂРµР±РѕСЂР° Recordset.
 --
--- Гарантируется закрытие курсора перед завершением вызова
--- @param sql [required] текст запроса
--- @param params [optional] параметры для запроса
+-- Р“Р°СЂР°РЅС‚РёСЂСѓРµС‚СЃСЏ Р·Р°РєСЂС‹С‚РёРµ РєСѓСЂСЃРѕСЂР° РїРµСЂРµРґ Р·Р°РІРµСЂС€РµРЅРёРµРј РІС‹Р·РѕРІР°
+-- @param sql [required] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ Р·Р°РїСЂРѕСЃР°
 -- @param fn [required] callback 
 -- @see dba.callback_function
 -- @usage
@@ -393,13 +393,13 @@ function Connection:neach(...) return Connection_private.each(self, 'a',  ...) e
 
 function Connection:teach(...) return Connection_private.each(self, 'an', ...) end
 
---- Итератор для перебора Recordset.
+--- РС‚РµСЂР°С‚РѕСЂ РґР»СЏ РїРµСЂРµР±РѕСЂР° Recordset.
 --
--- <br> Итератор для generic for
--- <br> Гарантируется закрытие курсора по достижении конца или при закрытии подключения.
--- <br> Перебор продолжается до конца курсора или пока первое поле не будет равно NULL.
--- @param sql [required] текст запроса
--- @param params [optional] параметры для запроса
+-- <br> РС‚РµСЂР°С‚РѕСЂ РґР»СЏ generic for
+-- <br> Р“Р°СЂР°РЅС‚РёСЂСѓРµС‚СЃСЏ Р·Р°РєСЂС‹С‚РёРµ РєСѓСЂСЃРѕСЂР° РїРѕ РґРѕСЃС‚РёР¶РµРЅРёРё РєРѕРЅС†Р° РёР»Рё РїСЂРё Р·Р°РєСЂС‹С‚РёРё РїРѕРґРєР»СЋС‡РµРЅРёСЏ.
+-- <br> РџРµСЂРµР±РѕСЂ РїСЂРѕРґРѕР»Р¶Р°РµС‚СЃСЏ РґРѕ РєРѕРЅС†Р° РєСѓСЂСЃРѕСЂР° РёР»Рё РїРѕРєР° РїРµСЂРІРѕРµ РїРѕР»Рµ РЅРµ Р±СѓРґРµС‚ СЂР°РІРЅРѕ NULL.
+-- @param sql [required] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ Р·Р°РїСЂРѕСЃР°
 -- @usage
 -- local sql = 'select ID, NAME from Clients where NAME = :NAME'
 -- local params = {NAME='ALEX'}
@@ -435,9 +435,9 @@ end
 ------------------------------------------------------------------
 do -- Connection fetch
 
---- Возвращает первую строку Recordset.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРµСЂРІСѓСЋ СЃС‚СЂРѕРєСѓ Recordset.
 --
--- <br> Эквивалентна Connection:each(sql,params,function(...) return ... end)
+-- <br> Р­РєРІРёРІР°Р»РµРЅС‚РЅР° Connection:each(sql,params,function(...) return ... end)
 -- @see Connection:rows
 -- @class function
 -- @name Connection:first_row
@@ -459,9 +459,9 @@ function Connection:first_nrow(...) return Connection_private.first_row(self, 'a
 
 function Connection:first_trow(...) return Connection_private.first_row(self, 'an', ...) end
 
---- Возвращает первое значение первой записи.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРµСЂРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РїРµСЂРІРѕР№ Р·Р°РїРёСЃРё.
 --
--- <br> Эквивалентна (Connection:first_row(sql,params)) с учетом проверки на ошибки
+-- <br> Р­РєРІРёРІР°Р»РµРЅС‚РЅР° (Connection:first_row(sql,params)) СЃ СѓС‡РµС‚РѕРј РїСЂРѕРІРµСЂРєРё РЅР° РѕС€РёР±РєРё
 -- @usage local cnt, err = db:first_value('select count(*) from Clients')
 function Connection:first_value(...)
   local t, err = self:first_irow(...)
@@ -470,12 +470,12 @@ function Connection:first_value(...)
 end
 
 
---- Возвращает полный результат запроса
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚ Р·Р°РїСЂРѕСЃР°
 -- 
--- @param fetch_mode [required] 'a' - именованные записи 'n' - нимерованные записи
--- @param sql [required] текст запроса
--- @param params [optional] таблица параметров для запроса
--- @return массив записей
+-- @param fetch_mode [required] 'a' - РёРјРµРЅРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё 'n' - РЅРёРјРµСЂРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё
+-- @param sql [required] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] С‚Р°Р±Р»РёС†Р° РїР°СЂР°РјРµС‚СЂРѕРІ РґР»СЏ Р·Р°РїСЂРѕСЃР°
+-- @return РјР°СЃСЃРёРІ Р·Р°РїРёСЃРµР№
 -- @see Connection:new
 -- @see Environment.Environment:connection
 function Connection:fetch_all(fetch_mode, sql, params)

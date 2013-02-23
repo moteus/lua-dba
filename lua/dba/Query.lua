@@ -17,14 +17,14 @@ local Query_private = {}
 ------------------------------------------------------------------
 do -- ctor/dtor/close/open
 
---- Создается новый объект @{Query.Query|Query}.
+--- РЎРѕР·РґР°РµС‚СЃСЏ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ @{Query.Query|Query}.
 -- 
 -- @local
 --
--- @param cnn [required] открытый объект Connection
--- @param sql [optional] текст запроса
--- @param params [optional] таблица параметров для запроса
--- @return объект @{Query.Query|Query}
+-- @param cnn [required] РѕС‚РєСЂС‹С‚С‹Р№ РѕР±СЉРµРєС‚ Connection
+-- @param sql [optional] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] С‚Р°Р±Р»РёС†Р° РїР°СЂР°РјРµС‚СЂРѕРІ РґР»СЏ Р·Р°РїСЂРѕСЃР°
+-- @return РѕР±СЉРµРєС‚ @{Query.Query|Query}
 function Query:new(cnn, sql, params)
   assert(cnn)
   local hcnn = assert(cnn:handle())
@@ -60,7 +60,7 @@ function Query:new(cnn, sql, params)
   return t
 end
 
---- Уничтожает объект Query
+--- РЈРЅРёС‡С‚РѕР¶Р°РµС‚ РѕР±СЉРµРєС‚ Query
 --
 -- @see Connection.Connection:query
 -- @see Connection.Connection:prepare
@@ -74,7 +74,7 @@ function Query:destroy()
   return true
 end
 
---- Закрывает открытый курсор.
+--- Р—Р°РєСЂС‹РІР°РµС‚ РѕС‚РєСЂС‹С‚С‹Р№ РєСѓСЂСЃРѕСЂ.
 -- 
 function Query:close()
   if self:closed() then 
@@ -86,7 +86,7 @@ function Query:close()
   self.private_.cur = nil
 end
 
---- Возвращает статус курсора.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚Р°С‚СѓСЃ РєСѓСЂСЃРѕСЂР°.
 -- 
 function Query:closed()
   local cur = self.private_.cur
@@ -94,13 +94,13 @@ function Query:closed()
   return cursor_utils.closed(cur)
 end
 
---- Возвращает статус курсора.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚Р°С‚СѓСЃ РєСѓСЂСЃРѕСЂР°.
 -- 
 function Query:opened()
   return not self:closed()
 end
 
---- Возвращает плотформозависимый дескриптор.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїР»РѕС‚С„РѕСЂРјРѕР·Р°РІРёСЃРёРјС‹Р№ РґРµСЃРєСЂРёРїС‚РѕСЂ.
 -- 
 -- @return handle
 function Query:handle()
@@ -115,11 +115,11 @@ do -- Query prepare
 
 --- Prepare query.
 --
--- <br>Если библиотека или драйвер не поддерживают подготовленные запросы, то
--- используется подстановка параметров в текст при выполнении. При этом 
--- функция возвращает успех, но Query:prepared возвращает false.
--- @param sql [optional] текст запроса
--- @return true в случае удачи
+-- <br>Р•СЃР»Рё Р±РёР±Р»РёРѕС‚РµРєР° РёР»Рё РґСЂР°Р№РІРµСЂ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°СЋС‚ РїРѕРґРіРѕС‚РѕРІР»РµРЅРЅС‹Рµ Р·Р°РїСЂРѕСЃС‹, С‚Рѕ
+-- РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РїРѕРґСЃС‚Р°РЅРѕРІРєР° РїР°СЂР°РјРµС‚СЂРѕРІ РІ С‚РµРєСЃС‚ РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё. РџСЂРё СЌС‚РѕРј 
+-- С„СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ СѓСЃРїРµС…, РЅРѕ Query:prepared РІРѕР·РІСЂР°С‰Р°РµС‚ false.
+-- @param sql [optional] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @return true РІ СЃР»СѓС‡Р°Рµ СѓРґР°С‡Рё
 function Query:prepare(sql)
   local ok, err 
   if sql then
@@ -128,22 +128,22 @@ function Query:prepare(sql)
   end
 
   if self:get_config('FORCE_REPLACE_PARAMS') then
-    -- возможна только эмуляция во время вызова 
+    -- РІРѕР·РјРѕР¶РЅР° С‚РѕР»СЊРєРѕ СЌРјСѓР»СЏС†РёСЏ РІРѕ РІСЂРµРјСЏ РІС‹Р·РѕРІР° 
     return true
   end
 
-  -- явно поддерживаются подгатовленные запросы и они разрешены
+  -- СЏРІРЅРѕ РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ РїРѕРґРіР°С‚РѕРІР»РµРЅРЅС‹Рµ Р·Р°РїСЂРѕСЃС‹ Рё РѕРЅРё СЂР°Р·СЂРµС€РµРЅС‹
   if self:supports_prepare() then
     ok, err = self.private_.stmt:prepare(self.private_.translated_sql or self.private_.sql)
     if not ok then return nil, err end
     return true
   end
 
-  -- возможна только эмуляция во время вызова 
+  -- РІРѕР·РјРѕР¶РЅР° С‚РѕР»СЊРєРѕ СЌРјСѓР»СЏС†РёСЏ РІРѕ РІСЂРµРјСЏ РІС‹Р·РѕРІР° 
   return true
 end
 
---- Возвращает признак того что запрос подготовлен.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРёР·РЅР°Рє С‚РѕРіРѕ С‡С‚Рѕ Р·Р°РїСЂРѕСЃ РїРѕРґРіРѕС‚РѕРІР»РµРЅ.
 --
 function Query:prepared()
   return (self.private_.stmt ~= nil) and (self.private_.stmt:prepared())
@@ -200,34 +200,34 @@ function Query_private:execute(sql, params)
   end
 
   if not Query_private.need_replace_params(self) then
-    -- 1. поддержка явных ODBC statement'ов
-    -- запрос подгатовлен
+    -- 1. РїРѕРґРґРµСЂР¶РєР° СЏРІРЅС‹С… ODBC statement'РѕРІ
+    -- Р·Р°РїСЂРѕСЃ РїРѕРґРіР°С‚РѕРІР»РµРЅ
     if self:prepared() then return self.private_.stmt:execute() end
 
-    -- 2. поддержка явных ODBC statement'ов
-    -- запрос не подгатовлен
+    -- 2. РїРѕРґРґРµСЂР¶РєР° СЏРІРЅС‹С… ODBC statement'РѕРІ
+    -- Р·Р°РїСЂРѕСЃ РЅРµ РїРѕРґРіР°С‚РѕРІР»РµРЅ
     assert(self.private_.stmt)
     return self.private_.stmt:execute(self.private_.translated_sql or self.private_.sql)
   end
 
-  -- 3. Параметры с заменой
+  -- 3. РџР°СЂР°РјРµС‚СЂС‹ СЃ Р·Р°РјРµРЅРѕР№
   if (self.private_.params) and (not self:get_config('IGNORE_NAMED_PARAMS')) then
     local q = param_utils.apply_params(self.private_.sql, self.private_.params)
     if self.private_.stmt then return self.private_.stmt:execute(q) end
     return self.private_.cnn:handle():execute(q)
   end
 
-  -- 4. запрос без параметров
+  -- 4. Р·Р°РїСЂРѕСЃ Р±РµР· РїР°СЂР°РјРµС‚СЂРѕРІ
   if self.private_.stmt then return self.private_.stmt:execute(self.private_.sql) end
   return self.private_.cnn:handle():execute(self.private_.sql)
 end
 
---- Устанавливает текст запроса.
+--- РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°.
 --
--- <br> После изменения SQL все параметры становятся невалидными.
--- <br> Запрос не должен быть открыт или подготовлен.
--- @param sql текст запроса
--- @return true в случае удачи
+-- <br> РџРѕСЃР»Рµ РёР·РјРµРЅРµРЅРёСЏ SQL РІСЃРµ РїР°СЂР°РјРµС‚СЂС‹ СЃС‚Р°РЅРѕРІСЏС‚СЃСЏ РЅРµРІР°Р»РёРґРЅС‹РјРё.
+-- <br> Р—Р°РїСЂРѕСЃ РЅРµ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕС‚РєСЂС‹С‚ РёР»Рё РїРѕРґРіРѕС‚РѕРІР»РµРЅ.
+-- @param sql С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @return true РІ СЃР»СѓС‡Р°Рµ СѓРґР°С‡Рё
 function Query:set_sql(sql)
   assert(type(sql) == 'string')
 
@@ -235,10 +235,10 @@ function Query:set_sql(sql)
   if self:opened()   then return nil, ERR_MSGS.query_opened   end
 
   local psql, plst
-  -- явно поддерживаются параметры в запросе и они разрешены
+  -- СЏРІРЅРѕ РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ РїР°СЂР°РјРµС‚СЂС‹ РІ Р·Р°РїСЂРѕСЃРµ Рё РѕРЅРё СЂР°Р·СЂРµС€РµРЅС‹
   if not Query_private.need_replace_params(self) then
-    -- для поддержки именованных параметров необходимо преобразовать запрос
-    -- преобразование именованных параметров
+    -- РґР»СЏ РїРѕРґРґРµСЂР¶РєРё РёРјРµРЅРѕРІР°РЅРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРµРѕР±СЂР°Р·РѕРІР°С‚СЊ Р·Р°РїСЂРѕСЃ
+    -- РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РёРјРµРЅРѕРІР°РЅРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ
     if not self:get_config('IGNORE_NAMED_PARAMS') then
       psql, plst = param_utils.translate_params(sql)
       if not psql then return nil, plst end 
@@ -250,41 +250,41 @@ function Query:set_sql(sql)
   self.private_.sql                     = sql
   self.private_.translated_sql          = psql
 
-  -- массив для соответствия номера парамеира - имени
-  -- Если не используется явный bind, то эта таблица не обязательна
+  -- РјР°СЃСЃРёРІ РґР»СЏ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёСЏ РЅРѕРјРµСЂР° РїР°СЂР°РјРµРёСЂР° - РёРјРµРЅРё
+  -- Р•СЃР»Рё РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ СЏРІРЅС‹Р№ bind, С‚Рѕ СЌС‚Р° С‚Р°Р±Р»РёС†Р° РЅРµ РѕР±СЏР·Р°С‚РµР»СЊРЅР°
   self.private_.translated_param_list   = plst
 
-  -- используется для хранения значений параметров для их
-  -- дальнейшей подстановки. Если используется явный bind, 
-  -- то эта таблица не обязательна
+  -- РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёР№ РїР°СЂР°РјРµС‚СЂРѕРІ РґР»СЏ РёС…
+  -- РґР°Р»СЊРЅРµР№С€РµР№ РїРѕРґСЃС‚Р°РЅРѕРІРєРё. Р•СЃР»Рё РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ СЏРІРЅС‹Р№ bind, 
+  -- С‚Рѕ СЌС‚Р° С‚Р°Р±Р»РёС†Р° РЅРµ РѕР±СЏР·Р°С‚РµР»СЊРЅР°
   self.private_.params                  = nil
 
   return true
 end
 
---- Присваивает значение параметру.
+--- РџСЂРёСЃРІР°РёРІР°РµС‚ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂСѓ.
 --
--- <br> В качестве значения можно указывать 2 специальные константы PARAM_NULL и PARAM_DEFAULT.
--- @param paramID номер параметра (начиная с 1) или имя параметра
--- @param value   значение параметра. 
+-- <br> Р’ РєР°С‡РµСЃС‚РІРµ Р·РЅР°С‡РµРЅРёСЏ РјРѕР¶РЅРѕ СѓРєР°Р·С‹РІР°С‚СЊ 2 СЃРїРµС†РёР°Р»СЊРЅС‹Рµ РєРѕРЅСЃС‚Р°РЅС‚С‹ PARAM_NULL Рё PARAM_DEFAULT.
+-- @param paramID РЅРѕРјРµСЂ РїР°СЂР°РјРµС‚СЂР° (РЅР°С‡РёРЅР°СЏ СЃ 1) РёР»Рё РёРјСЏ РїР°СЂР°РјРµС‚СЂР°
+-- @param value   Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°. 
 -- @class function 
 -- @name Query:bind[1]
 
---- Присваивает значение параметру.
+--- РџСЂРёСЃРІР°РёРІР°РµС‚ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂСѓ.
 --
--- <br> Эта функция может использоватся только если параметризованные запросы поддерживается драйвером.
--- <br> В качестве значения можно указывать 2 специальные константы PARAM_NULL и PARAM_DEFAULT.
--- @param paramID   номер параметра (начиная с 1) или имя параметра
--- @param func  Функция используется для получения данных в момент выполнения запроса.
--- <br>Для строк может выдавать данные порциями. Конец данных наступает либо в момент возврата nil если 
--- не использовался параметр len, либо после передачи len байт если был указан параметр len.
--- @param len [optional] реальная длинна данных.
+-- <br> Р­С‚Р° С„СѓРЅРєС†РёСЏ РјРѕР¶РµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЃСЏ С‚РѕР»СЊРєРѕ РµСЃР»Рё РїР°СЂР°РјРµС‚СЂРёР·РѕРІР°РЅРЅС‹Рµ Р·Р°РїСЂРѕСЃС‹ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ РґСЂР°Р№РІРµСЂРѕРј.
+-- <br> Р’ РєР°С‡РµСЃС‚РІРµ Р·РЅР°С‡РµРЅРёСЏ РјРѕР¶РЅРѕ СѓРєР°Р·С‹РІР°С‚СЊ 2 СЃРїРµС†РёР°Р»СЊРЅС‹Рµ РєРѕРЅСЃС‚Р°РЅС‚С‹ PARAM_NULL Рё PARAM_DEFAULT.
+-- @param paramID   РЅРѕРјРµСЂ РїР°СЂР°РјРµС‚СЂР° (РЅР°С‡РёРЅР°СЏ СЃ 1) РёР»Рё РёРјСЏ РїР°СЂР°РјРµС‚СЂР°
+-- @param func  Р¤СѓРЅРєС†РёСЏ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РґР°РЅРЅС‹С… РІ РјРѕРјРµРЅС‚ РІС‹РїРѕР»РЅРµРЅРёСЏ Р·Р°РїСЂРѕСЃР°.
+-- <br>Р”Р»СЏ СЃС‚СЂРѕРє РјРѕР¶РµС‚ РІС‹РґР°РІР°С‚СЊ РґР°РЅРЅС‹Рµ РїРѕСЂС†РёСЏРјРё. РљРѕРЅРµС† РґР°РЅРЅС‹С… РЅР°СЃС‚СѓРїР°РµС‚ Р»РёР±Рѕ РІ РјРѕРјРµРЅС‚ РІРѕР·РІСЂР°С‚Р° nil РµСЃР»Рё 
+-- РЅРµ РёСЃРїРѕР»СЊР·РѕРІР°Р»СЃСЏ РїР°СЂР°РјРµС‚СЂ len, Р»РёР±Рѕ РїРѕСЃР»Рµ РїРµСЂРµРґР°С‡Рё len Р±Р°Р№С‚ РµСЃР»Рё Р±С‹Р» СѓРєР°Р·Р°РЅ РїР°СЂР°РјРµС‚СЂ len.
+-- @param len [optional] СЂРµР°Р»СЊРЅР°СЏ РґР»РёРЅРЅР° РґР°РЅРЅС‹С….
 -- @class function 
 -- @name Query:bind[2]
 
---- Присваивает значение параметрам.
+--- РџСЂРёСЃРІР°РёРІР°РµС‚ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°Рј.
 --
--- @param params - таблица параметров(название/номер => значение)
+-- @param params - С‚Р°Р±Р»РёС†Р° РїР°СЂР°РјРµС‚СЂРѕРІ(РЅР°Р·РІР°РЅРёРµ/РЅРѕРјРµСЂ => Р·РЅР°С‡РµРЅРёРµ)
 -- @class function 
 -- @name Query:bind[3]
 
@@ -295,15 +295,15 @@ function Query:bind(paramID, val, ...)
 
   if self:opened() then  return nil, ERR_MSGS.query_opened end
 
-  -- нет поддержки явного bind или необходимо использовать подстановку
+  -- РЅРµС‚ РїРѕРґРґРµСЂР¶РєРё СЏРІРЅРѕРіРѕ bind РёР»Рё РЅРµРѕР±С…РѕРґРёРјРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РїРѕРґСЃС‚Р°РЅРѕРІРєСѓ
   if Query_private.need_replace_params(self) then 
-    -- поддерживаются только именованные параметры
+    -- РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ С‚РѕР»СЊРєРѕ РёРјРµРЅРѕРІР°РЅРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
     if Query_private.get_config_param(self,'IGNORE_NAMED_PARAMS') then
       return nil, ERR_MSGS.deny_named_params
     end
 
     self.private_.params = self.private_.params or {}
-    -- Сохраняем все параметры для дальнейшей подстановки
+    -- РЎРѕС…СЂР°РЅСЏРµРј РІСЃРµ РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ РґР°Р»СЊРЅРµР№С€РµР№ РїРѕРґСЃС‚Р°РЅРѕРІРєРё
     if paramID_type == 'table' then
       for k, v in pairs(paramID) do self.private_.params[k] = v  end
     else
@@ -324,21 +324,21 @@ function Query:bind(paramID, val, ...)
   if paramID_type == 'table' then
     local k, v = next(paramID)
     if (type(k) == 'string') and (Query_private.get_config_param(self,'IGNORE_NAMED_PARAMS')) then
-      -- в одном запросе нельзя совмещать позиционные и именованные параметры
-      -- поэтому определяем тип параметров по одному ключу
+      -- РІ РѕРґРЅРѕРј Р·Р°РїСЂРѕСЃРµ РЅРµР»СЊР·СЏ СЃРѕРІРјРµС‰Р°С‚СЊ РїРѕР·РёС†РёРѕРЅРЅС‹Рµ Рё РёРјРµРЅРѕРІР°РЅРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
+      -- РїРѕСЌС‚РѕРјСѓ РѕРїСЂРµРґРµР»СЏРµРј С‚РёРї РїР°СЂР°РјРµС‚СЂРѕРІ РїРѕ РѕРґРЅРѕРјСѓ РєР»СЋС‡Сѓ
       return nil, ERR_MSGS.deny_named_params
     end
 
     if type(k) == 'number' then
-      -- можно заполнить не все подряд параметры, поэтому не используем ipairs
+      -- РјРѕР¶РЅРѕ Р·Р°РїРѕР»РЅРёС‚СЊ РЅРµ РІСЃРµ РїРѕРґСЂСЏРґ РїР°СЂР°РјРµС‚СЂС‹, РїРѕСЌС‚РѕРјСѓ РЅРµ РёСЃРїРѕР»СЊР·СѓРµРј ipairs
       for k, v in pairs(paramID)do
         local ok, err = param_utils.bind_param(self.private_.stmt, k, v)
         if not ok then return nil, err, k end
       end
     elseif type(k) == 'string' then
-      -- эта проверка возвращает ошибку если нет ни одного параметра
-      -- но попытка присвоить несуществующие параметры не вызывает ошибку
-      -- наверное стоит синхронизировать поведение
+      -- СЌС‚Р° РїСЂРѕРІРµСЂРєР° РІРѕР·РІСЂР°С‰Р°РµС‚ РѕС€РёР±РєСѓ РµСЃР»Рё РЅРµС‚ РЅРё РѕРґРЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР°
+      -- РЅРѕ РїРѕРїС‹С‚РєР° РїСЂРёСЃРІРѕРёС‚СЊ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ РїР°СЂР°РјРµС‚СЂС‹ РЅРµ РІС‹Р·С‹РІР°РµС‚ РѕС€РёР±РєСѓ
+      -- РЅР°РІРµСЂРЅРѕРµ СЃС‚РѕРёС‚ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°С‚СЊ РїРѕРІРµРґРµРЅРёРµ
       if not self.private_.translated_param_list then 
         return nil, ERR_MSGS.unknown_parameter .. k
       end
@@ -361,11 +361,11 @@ function Query:bind(paramID, val, ...)
   end
 
   if (not self.private_.translated_param_list) or (not param_utils.ifind(paramID, self.private_.translated_param_list)) then 
-    -- в запросе нет именованного параметра с таким именем
+    -- РІ Р·Р°РїСЂРѕСЃРµ РЅРµС‚ РёРјРµРЅРѕРІР°РЅРЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР° СЃ С‚Р°РєРёРј РёРјРµРЅРµРј
     return nil, ERR_MSGS.unknown_parameter .. paramID
   end
 
-  -- параметр с одним именем может встречатся несколько раз
+  -- РїР°СЂР°РјРµС‚СЂ СЃ РѕРґРЅРёРј РёРјРµРЅРµРј РјРѕР¶РµС‚ РІСЃС‚СЂРµС‡Р°С‚СЃСЏ РЅРµСЃРєРѕР»СЊРєРѕ СЂР°Р·
   for i, name in ipairs(self.private_.translated_param_list) do
     if name == paramID then
       local ok, err = param_utils.bind_param(self.private_.stmt, i, val, ...)
@@ -376,15 +376,15 @@ function Query:bind(paramID, val, ...)
   return true
 end
 
---- Открывает курсор.
+--- РћС‚РєСЂС‹РІР°РµС‚ РєСѓСЂСЃРѕСЂ.
 --
--- @param sql [optional] текст запроса
--- @param param [optional] параметры запроса
+-- @param sql [optional] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param param [optional] РїР°СЂР°РјРµС‚СЂС‹ Р·Р°РїСЂРѕСЃР°
 -- @see Query:closed
 -- @see Query:close
 function Query:open(sql, param)
-  -- запрос выполняется всегда
-  -- возможно только отменить транзакцию если нет autocommit
+  -- Р·Р°РїСЂРѕСЃ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РІСЃРµРіРґР°
+  -- РІРѕР·РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РѕС‚РјРµРЅРёС‚СЊ С‚СЂР°РЅР·Р°РєС†РёСЋ РµСЃР»Рё РЅРµС‚ autocommit
 
   if self:opened() then return nil, ERR_MSGS.query_opened end
   if param == nil then
@@ -401,12 +401,12 @@ function Query:open(sql, param)
   return true
 end
 
---- Выполняет запрос который не должен возвращать Recordset.
+--- Р’С‹РїРѕР»РЅСЏРµС‚ Р·Р°РїСЂРѕСЃ РєРѕС‚РѕСЂС‹Р№ РЅРµ РґРѕР»Р¶РµРЅ РІРѕР·РІСЂР°С‰Р°С‚СЊ Recordset.
 --
--- <br> Если запрос вернул курсор, то он закрывается, но не производится откат транзакции
--- @param sql [optional] текст запроса
--- @param params [optional] параметры для запроса
--- @return количество записей задействованных в запросе,
+-- <br> Р•СЃР»Рё Р·Р°РїСЂРѕСЃ РІРµСЂРЅСѓР» РєСѓСЂСЃРѕСЂ, С‚Рѕ РѕРЅ Р·Р°РєСЂС‹РІР°РµС‚СЃСЏ, РЅРѕ РЅРµ РїСЂРѕРёР·РІРѕРґРёС‚СЃСЏ РѕС‚РєР°С‚ С‚СЂР°РЅР·Р°РєС†РёРё
+-- @param sql [optional] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ Р·Р°РїСЂРѕСЃР°
+-- @return РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїРёСЃРµР№ Р·Р°РґРµР№СЃС‚РІРѕРІР°РЅРЅС‹С… РІ Р·Р°РїСЂРѕСЃРµ,
 -- @see Connection.Connection:query
 -- @see Connection.Connection:prepare
 -- @see Query:set_sql
@@ -434,12 +434,12 @@ end
 ------------------------------------------------------------------
 do -- Query iterator
 
---- Итератор для перебора Recordset.
+--- РС‚РµСЂР°С‚РѕСЂ РґР»СЏ РїРµСЂРµР±РѕСЂР° Recordset.
 --
 -- <br> 
--- @param sql [optional] текст запроса
--- @param params [optional] параметры для запроса
--- @param autoclose [optional] признак того что запрос должен быть закрыт перез завершением функции.
+-- @param sql [optional] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ Р·Р°РїСЂРѕСЃР°
+-- @param autoclose [optional] РїСЂРёР·РЅР°Рє С‚РѕРіРѕ С‡С‚Рѕ Р·Р°РїСЂРѕСЃ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р·Р°РєСЂС‹С‚ РїРµСЂРµР· Р·Р°РІРµСЂС€РµРЅРёРµРј С„СѓРЅРєС†РёРё.
 -- @param fn [required] callback 
 -- @see dba.callback_function
 -- @class function
@@ -485,11 +485,11 @@ function Query:neach(...) return Query_private.each(self, 'a',  ...) end
 
 function Query:teach(...) return Query_private.each(self, 'an', ...) end
 
---- Итератор для перебора Recordset.
+--- РС‚РµСЂР°С‚РѕСЂ РґР»СЏ РїРµСЂРµР±РѕСЂР° Recordset.
 --
--- <br> Итератор для generic for
--- @param sql [optional] текст запроса
--- @param params [optional] параметры для запроса
+-- <br> РС‚РµСЂР°С‚РѕСЂ РґР»СЏ generic for
+-- @param sql [optional] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ Р·Р°РїСЂРѕСЃР°
 --
 -- @class function
 -- @name Query:rows
@@ -528,9 +528,9 @@ end
 ------------------------------------------------------------------
 do -- Query fetch
 
---- Возвращает первую строку Recordset.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРµСЂРІСѓСЋ СЃС‚СЂРѕРєСѓ Recordset.
 --
--- <br> Эквивалентна Query:each(sql,params,function(...) return ... end)
+-- <br> Р­РєРІРёРІР°Р»РµРЅС‚РЅР° Query:each(sql,params,function(...) return ... end)
 -- @see Query:rows
 -- @class function
 -- @name Query:first_row
@@ -558,9 +558,9 @@ function Query:first_nrow(...) return Query_private.first_row(self, 'a',  ...) e
 function Query:first_trow(...) return Query_private.first_row(self, 'an', ...) end
 
 
---- Возвращает первое значение первой записи.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРµСЂРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РїРµСЂРІРѕР№ Р·Р°РїРёСЃРё.
 --
--- <br> Эквивалентна (Query:first_row(sql,params)) с учетом проверки на ошибки
+-- <br> Р­РєРІРёРІР°Р»РµРЅС‚РЅР° (Query:first_row(sql,params)) СЃ СѓС‡РµС‚РѕРј РїСЂРѕРІРµСЂРєРё РЅР° РѕС€РёР±РєРё
 -- @see Query:first_row
 function Query:first_value(...)
   local t, err = self:first_irow(...)
@@ -568,12 +568,12 @@ function Query:first_value(...)
   return nil, err
 end
 
---- Возвращает полный результат запроса
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚ Р·Р°РїСЂРѕСЃР°
 -- 
--- @param fetch_mode [required] 'a' - именованные записи 'n' - нимерованные записи
--- @param sql [optional] текст запроса
--- @param params [optional] таблица параметров для запроса
--- @return массив записей
+-- @param fetch_mode [required] 'a' - РёРјРµРЅРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё 'n' - РЅРёРјРµСЂРѕРІР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё
+-- @param sql [optional] С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+-- @param params [optional] С‚Р°Р±Р»РёС†Р° РїР°СЂР°РјРµС‚СЂРѕРІ РґР»СЏ Р·Р°РїСЂРѕСЃР°
+-- @return РјР°СЃСЃРёРІ Р·Р°РїРёСЃРµР№
 function Query:fetch_all(fetch_mode, sql, params)
   assert(self:closed())
   if type(sql) == 'table' then
@@ -620,10 +620,10 @@ end
 ------------------------------------------------------------------
 do -- Query multiresultset
 
---- Переключает курсор не следующий Recordset.
--- <br>Курсор должен быть открыт.
--- @return ничего если нет следующего Recordset
--- @return курсор если есть следующий Recordset
+--- РџРµСЂРµРєР»СЋС‡Р°РµС‚ РєСѓСЂСЃРѕСЂ РЅРµ СЃР»РµРґСѓСЋС‰РёР№ Recordset.
+-- <br>РљСѓСЂСЃРѕСЂ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕС‚РєСЂС‹С‚.
+-- @return РЅРёС‡РµРіРѕ РµСЃР»Рё РЅРµС‚ СЃР»РµРґСѓСЋС‰РµРіРѕ Recordset
+-- @return РєСѓСЂСЃРѕСЂ РµСЃР»Рё РµСЃС‚СЊ СЃР»РµРґСѓСЋС‰РёР№ Recordset
 -- @see Query:open
 -- @see Query:closed
 -- @see Query:close

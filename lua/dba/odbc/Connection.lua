@@ -83,7 +83,7 @@ local function crossreference_impl(self, fetch_mode, ...)
   else fn = nil end
 
   local n = math.floor(arg.n/2)
-  assert(0 == math.mod(arg.n,2)) -- обе таблицы должны содержать одинаковые наборы параметры
+  assert(0 == math.mod(arg.n,2)) -- РѕР±Рµ С‚Р°Р±Р»РёС†С‹ РґРѕР»Р¶РЅС‹ СЃРѕРґРµСЂР¶Р°С‚СЊ РѕРґРёРЅР°РєРѕРІС‹Рµ РЅР°Р±РѕСЂС‹ РїР°СЂР°РјРµС‚СЂС‹
 
   local primaryCatalog, primarySchema, primaryTable
   local foreignCatalog, foreignSchema, foreignTable
@@ -125,154 +125,154 @@ make_catalog_fn('procedure_columns','procedurecolumns')
 make_catalog_fn('column_privileges','columnprivileges')
 
 
---- Возвращает список поддерживаемых типов данных.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕРґРґРµСЂР¶РёРІР°РµРјС‹С… С‚РёРїРѕРІ РґР°РЅРЅС‹С….
 --
 -- @param tcode [optional] numeric type code
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:typeinfo
 
---- Возвращает список поддерживаемых типов таблиц.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕРґРґРµСЂР¶РёРІР°РµРјС‹С… С‚РёРїРѕРІ С‚Р°Р±Р»РёС†.
 --
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:tabletypes
 
---- Возвращает список схем БД.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃС…РµРј Р‘Р”.
 --
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:schemas
 
---- Возвращает список каталогов.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєР°С‚Р°Р»РѕРіРѕРІ.
 --
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:catalogs
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional]
 -- @param tableName [optional]
 -- @param unique [optional] boolean
 -- @param reserved [optional] boolean
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:statistics 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional]
 -- @param tableName [optional]
 -- @param types [optional]
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:tables 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional]
 -- @param tableName [optional]
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:table_privileges
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional]
 -- @param tableName [optional]
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:primary_keys 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional]
 -- @param tableName [optional]
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:index_info 
 
 ---
--- @param pc [optional] primary catalog (только если драйвер поддерживат каталоги)
+-- @param pc [optional] primary catalog (С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё)
 -- @param ps [optional] primary schema  
 -- @param pt [optional] primary table   
--- @param fc [optional] foreign catalog (только если драйвер поддерживат каталоги)
+-- @param fc [optional] foreign catalog (С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё)
 -- @param fs [optional] foreign schema  
 -- @param ft [optional] foreign table   
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:crossreference
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional] 
 -- @param tableName [optional] 
 -- @param columnName [optional] 
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:columns 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional] 
 -- @param tableName [optional] 
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:special_columns 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional] 
 -- @param procName [optional]  
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:procedures 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional] 
 -- @param procName [optional]   
 -- @param colName [optional]   
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:procedure_columns 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
+-- @param catalog [optional] С‚РѕР»СЊРєРѕ РµСЃР»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРґРµСЂР¶РёРІР°С‚ РєР°С‚Р°Р»РѕРіРё
 -- @param schema [optional] 
 -- @param tableName [optional] 
 -- @param columnName [optional] 
 -- @param fn [optional] callback
--- @return список записей
+-- @return СЃРїРёСЃРѕРє Р·Р°РїРёСЃРµР№
 -- @see dba.callback_function
 -- @class function
 -- @name Connection:column_privileges 
@@ -283,7 +283,7 @@ end
 ------------------------------------------------------------------
 do -- Connection ODBC specific
 
---- Возвращает название СУБД.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅР°Р·РІР°РЅРёРµ РЎРЈР‘Р”.
 --
 --
 function Connection:dbmsname()
@@ -299,7 +299,7 @@ function Connection:drvname()
   return self.private_.cnn:drvname()
 end
 
---- Возвращает версию драйвера.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РІРµСЂСЃРёСЋ РґСЂР°Р№РІРµСЂР°.
 --
 --
 function Connection:drvver()
@@ -307,7 +307,7 @@ function Connection:drvver()
   return self.private_.cnn:drvver()
 end
 
---- Возвращает версию ODBC в виде строки.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РІРµСЂСЃРёСЋ ODBC РІ РІРёРґРµ СЃС‚СЂРѕРєРё.
 --
 --
 function Connection:odbcver()
@@ -315,7 +315,7 @@ function Connection:odbcver()
   return self.private_.cnn:odbcver()
 end
 
---- Возвращает версию ODBC в виде двух чисел.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ РІРµСЂСЃРёСЋ ODBC РІ РІРёРґРµ РґРІСѓС… С‡РёСЃРµР».
 --
 --
 function Connection:odbcvermm()
@@ -323,7 +323,7 @@ function Connection:odbcvermm()
   return self.private_.cnn:odbcvermm()
 end
 
---- Возвращает текущего пользователя.
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
 --
 --
 function Connection:username()
@@ -415,9 +415,9 @@ local TRANSACTION_LEVEL = {
 }
 for i = 1, #TRANSACTION_LEVEL do TRANSACTION_LEVEL[ TRANSACTION_LEVEL[i] ] = i end
 
---- Проверяет поддерживает ли драйвер транзакции.
--- <br> Возможна проверка определенного уровня изоляции
--- @param lvl [optional] уровень изоляции транзакции (число/строка)
+--- РџСЂРѕРІРµСЂСЏРµС‚ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ Р»Рё РґСЂР°Р№РІРµСЂ С‚СЂР°РЅР·Р°РєС†РёРё.
+-- <br> Р’РѕР·РјРѕР¶РЅР° РїСЂРѕРІРµСЂРєР° РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ СѓСЂРѕРІРЅСЏ РёР·РѕР»СЏС†РёРё
+-- @param lvl [optional] СѓСЂРѕРІРµРЅСЊ РёР·РѕР»СЏС†РёРё С‚СЂР°РЅР·Р°РєС†РёРё (С‡РёСЃР»Рѕ/СЃС‚СЂРѕРєР°)
 -- @see dba.transaction_level
 function Connection:supports_transaction(lvl)
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
@@ -432,9 +432,9 @@ function Connection:supports_transaction(lvl)
   return self.private_.cnn:supportsTransactionIsolationLevel(lvl)
 end
 
---- Возвращает уровень транзакций по умолчанию для прдключения.
--- @return числовое значение 
--- @return строковое значение
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ СѓСЂРѕРІРµРЅСЊ С‚СЂР°РЅР·Р°РєС†РёР№ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РґР»СЏ РїСЂРґРєР»СЋС‡РµРЅРёСЏ.
+-- @return С‡РёСЃР»РѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ 
+-- @return СЃС‚СЂРѕРєРѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ
 function Connection:default_transaction()
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
   local lvl, err = self.private_.cnn:getDefaultTransactionIsolation()
@@ -442,8 +442,8 @@ function Connection:default_transaction()
   return lvl, TRANSACTION_LEVEL[lvl]
 end
 
---- Устанавливает текущий уровень транзакции для прдключения.
--- @param lvl [optional] уровень изоляции транзакции (число/строка). Если nil, то устанавливет значение по умолчанию.
+--- РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ С‚РµРєСѓС‰РёР№ СѓСЂРѕРІРµРЅСЊ С‚СЂР°РЅР·Р°РєС†РёРё РґР»СЏ РїСЂРґРєР»СЋС‡РµРЅРёСЏ.
+-- @param lvl [optional] СѓСЂРѕРІРµРЅСЊ РёР·РѕР»СЏС†РёРё С‚СЂР°РЅР·Р°РєС†РёРё (С‡РёСЃР»Рѕ/СЃС‚СЂРѕРєР°). Р•СЃР»Рё nil, С‚Рѕ СѓСЃС‚Р°РЅР°РІР»РёРІРµС‚ Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ.
 -- 
 function Connection:set_transaction_level(lvl)
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
@@ -462,9 +462,9 @@ function Connection:set_transaction_level(lvl)
   return self.private_.cnn:settransactionisolation(lvl)
 end
 
---- Возвращает текущий уровень транзакции для прдключения.
--- @return числовое значение 
--- @return строковое значение
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС‰РёР№ СѓСЂРѕРІРµРЅСЊ С‚СЂР°РЅР·Р°РєС†РёРё РґР»СЏ РїСЂРґРєР»СЋС‡РµРЅРёСЏ.
+-- @return С‡РёСЃР»РѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ 
+-- @return СЃС‚СЂРѕРєРѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ
 function Connection:get_transaction_level()
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
 
@@ -473,23 +473,23 @@ function Connection:get_transaction_level()
   return lvl, TRANSACTION_LEVEL[lvl]
 end
 
---- Проверяет поддерживает ли драйвер привязку параметров запросов.
+--- РџСЂРѕРІРµСЂСЏРµС‚ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ Р»Рё РґСЂР°Р№РІРµСЂ РїСЂРёРІСЏР·РєСѓ РїР°СЂР°РјРµС‚СЂРѕРІ Р·Р°РїСЂРѕСЃРѕРІ.
 --
 function Connection:supports_bind_param()
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
   return self.private_.cnn:supportsBindParam()
 end
 
---- Проверяет поддерживает ли драйвер подготовленные запросы.
+--- РџСЂРѕРІРµСЂСЏРµС‚ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ Р»Рё РґСЂР°Р№РІРµСЂ РїРѕРґРіРѕС‚РѕРІР»РµРЅРЅС‹Рµ Р·Р°РїСЂРѕСЃС‹.
 --
 function Connection:supports_prepare()
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
   return self.private_.cnn:supportsPrepare()
 end
 
---- Устанавливает таймоут для подключения к БД
+--- РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ С‚Р°Р№РјРѕСѓС‚ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Р‘Р”
 -- 
--- @param ms [optional] - интервал в миллисекундах. nil не устанавливать.
+-- @param ms [optional] - РёРЅС‚РµСЂРІР°Р» РІ РјРёР»Р»РёСЃРµРєСѓРЅРґР°С…. nil РЅРµ СѓСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ.
 -- @return - true
 function Connection:set_login_timeout(ms)
   assert(self.private_.cnn)
@@ -498,9 +498,9 @@ function Connection:set_login_timeout(ms)
   return true
 end
 
---- Возвращает таймоут для подключения к БД
+--- Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚Р°Р№РјРѕСѓС‚ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Р‘Р”
 -- 
--- @return - интервал в миллисекундах. nil не устанавленно
+-- @return - РёРЅС‚РµСЂРІР°Р» РІ РјРёР»Р»РёСЃРµРєСѓРЅРґР°С…. nil РЅРµ СѓСЃС‚Р°РЅР°РІР»РµРЅРЅРѕ
 function Connection:get_login_timeout()
   assert(self.private_.env)
   local ms = self.private_.cnn:getlogintimeout(ms or -1)
