@@ -1,61 +1,211 @@
-require "pprint"
-local dbassert = require "odbc".assert
+local CreateConnect = {
+  odbc = function()
+    local dba = require "dba.odbc"
+    return dba.Connect{
+      Driver   = "SQLite3 ODBC Driver";
+      Database = ":memory:";
+    }
+  end;
 
-local DBNAME = [[:memory:]]
-local odbc_params = {
-  Driver   = "SQLite3 ODBC Driver";
-  Database = DBNAME;
+  lsql = function()
+    local dba = require "dba.luasql".load('sqlite3')
+    return dba.Connect(":memory:")
+  end;
 }
 
-local odbc = require "dba.odbc"
-local lsql = require "dba.luasql".load('sqlite3')
-
-function init_db(cnn)
-  cnn:exec[[create table Agent(
-      ID INTEGER PRIMARY KEY,
-      Name char(32)
-  )]]
-  for i = 1, 10 do
-    cnn:exec(
-      string.format("insert into Agent(ID,NAME)values(%d, 'Agent#%d')", i, i)
-    )
+local CNN_TYPE = 'lsql'
+local CNN_ROWS = 10
+local function init_db(cnn)
+  local fmt = string.format
+  cnn:exec"create table Agent(ID INTEGER PRIMARY KEY, Name char(32))"
+  for i = 1, CNN_ROWS do
+    cnn:exec(fmt("insert into Agent(ID,NAME)values(%d, 'Agent#%d')", i, i))
   end
 end
 
-local sql = "select NULL, ID, Name from Agent where ID>:ID"
-local par = {ID=1}
+local function pack_n(...)
+  return { n = select("#", ...), ... }
+end
 
-ocnn = dbassert(odbc.Connect(odbc_params))
-lcnn = assert(lsql.Connect(DBNAME))
+local to_n = tonumber
 
-init_db(ocnn)
-init_db(lcnn)
+local lunit = require "lunit"
 
-ocnn:tables(print)
+local TEST_NAME = 'Connection'
+if _VERSION >= 'Lua 5.2' then  _ENV = lunit.module(TEST_NAME,'seeall')
+else module( TEST_NAME, package.seeall, lunit.testcase ) end
 
-ocnn:each(sql, par, print)
-lcnn:each(sql, par, print)
+local cnn
 
-oqry = ocnn:query(sql)
-lqry = lcnn:query(sql)
+function setup()
+  cnn = assert(CreateConnect[CNN_TYPE]())
+  init_db(cnn)
+end
 
-oqry:each(par, print)
-lqry:each(par, print)
+function teardown()
+  if cnn then cnn:destroy() end
+end
 
-oqry:destroy()
-lqry:destroy()
+function test_reconnect()
+  assert_true(cnn:connected())
+  assert_true(cnn:disconnect())
+  assert_false(cnn:connected())
+  assert_true(cnn:connect())
+end
 
-oqry = ocnn:query(sql, par)
-lqry = lcnn:query(sql, par)
+function test_each()
+  local sql = "select ID, Name from Agent order by ID"
+  local n = 0
+  cnn:each(sql, function(ID, Name) 
+    n = n + 1
+    assert_equal(n, to_n(ID))
+  end)
+  assert_equal(CNN_ROWS, n)
 
-oqry:each(print)
-lqry:each(print)
+  n = 0
+  cnn:ieach(sql, function(row) 
+    n = n + 1
+    assert_equal(n, to_n(row[1]))
+  end)
+  assert_equal(CNN_ROWS, n)
 
-oqry:destroy()
-lqry:destroy()
+  n = 0
+  cnn:neach(sql, function(row) 
+    n = n + 1
+    assert_equal(n, to_n(row.ID))
+  end)
+  assert_equal(CNN_ROWS, n)
 
-pprint{ocnn:fetch_all('an', sql, par)}
-pprint{lcnn:fetch_all('an', sql, par)}
+  n = 0
+  cnn:teach(sql, function(row) 
+    n = n + 1
+    assert_equal(n, to_n(row.ID))
+    assert_equal(n, to_n(row[1]))
+  end)
+  assert_equal(CNN_ROWS, n)
 
-ocnn:destroy()
-lcnn:destroy()
+  n = 0
+  local args = pack_n(cnn:each(sql, function(ID, Name) 
+    n = n + 1
+    return nil, 1, nil, 2
+  end))
+  assert_equal(1, n)
+  assert_equal(4, args.n)
+  assert_equal(1, args[2])
+  assert_equal(2, args[4])
+  assert_nil(args[1])
+  assert_nil(args[3])
+
+  n = 0
+  sql = "select ID, Name from Agent where ID > :ID order by ID"
+  local par = {ID = 1}
+  assert_true(cnn:each(sql, par, function(ID)
+    n = n + 1
+    assert_equal(par.ID + 1, to_n(ID))
+    return true
+  end))
+  assert_equal(1, n)
+end
+
+function test_rows()
+  local sql = "select ID, Name from Agent order by ID"
+  local n = 0
+  for ID, Name in cnn:rows(sql) do
+    n = n + 1
+    assert_equal(n, to_n(ID))
+  end
+  assert_equal(CNN_ROWS, n)
+
+  n = 0
+  for row in cnn:irows(sql) do
+    n = n + 1
+    assert_equal(n, to_n(row[1]))
+  end
+  assert_equal(CNN_ROWS, n)
+
+  n = 0
+  for row in cnn:nrows(sql) do
+    n = n + 1
+    assert_equal(n, to_n(row.ID))
+  end
+  assert_equal(CNN_ROWS, n)
+
+  n = 0
+  for row in cnn:trows(sql) do
+    n = n + 1
+    assert_equal(n, to_n(row.ID))
+    assert_equal(n, to_n(row[1]))
+  end
+  assert_equal(CNN_ROWS, n)
+
+  n = 0
+  sql = "select ID, Name from Agent where ID > :ID order by ID"
+  local par = {ID = 1}
+  for ID in cnn:rows(sql, par) do
+    n = n + 1
+    assert_equal(par.ID + 1, to_n(ID))
+    break
+  end
+  assert_equal(1, n)
+end
+
+function test_first()
+  local sql = "select ID, Name from Agent order by ID"
+  local ID, Name = cnn:first_row(sql)
+  assert_equal(1, to_n(ID))
+  assert_equal("Agent#1", Name)
+
+  local row
+  row = cnn:first_nrow(sql)
+  assert_equal(1, to_n(row.ID))
+  assert_equal("Agent#1", row.Name)
+
+  row = cnn:first_irow(sql)
+  assert_equal(1, to_n(row[1]))
+  assert_equal("Agent#1", row[2])
+
+  row = cnn:first_trow(sql)
+  assert_equal(1, to_n(row[1]))
+  assert_equal(1, to_n(row.ID))
+  assert_equal("Agent#1", row[2])
+  assert_equal("Agent#1", row.Name)
+
+  assert_equal(CNN_ROWS, to_n(cnn:first_value("select count(*) from Agent")))
+  assert_equal(CNN_ROWS, to_n(cnn:first_value("select ID from Agent where ID=:ID",{ID=CNN_ROWS})))
+end
+
+function test_txn()
+  assert_equal(CNN_ROWS, to_n(cnn:first_value("select count(*) from Agent")))
+  cnn:set_autocommit(false)
+  assert_number(cnn:exec("delete from Agent"))
+  assert_equal(0, to_n(cnn:first_value("select count(*) from Agent")))
+  cnn:rollback()
+  assert_equal(CNN_ROWS, to_n(cnn:first_value("select count(*) from Agent")))
+end
+
+local TEST_NAME = 'Query'
+if _VERSION >= 'Lua 5.2' then  _ENV = lunit.module(TEST_NAME,'seeall')
+else module( TEST_NAME, package.seeall, lunit.testcase ) end
+
+local cnn, qry
+
+function setup()
+  local cnn = assert(CreateConnect[CNN_TYPE]())
+  init_db(cnn)
+end
+
+function teardown()
+  if qry then qry:destroy() end
+  if cnn then cnn:destroy() end
+end
+
+function test()
+  
+end
+
+for _, str in ipairs{'lsql', 'odbc'} do
+  print()
+  print("---------------- TEST " .. str)
+  CNN_TYPE = str
+  lunit.run()
+end

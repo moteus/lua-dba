@@ -143,6 +143,22 @@ function cursor_utils.fetch_row(cur, fetch_mode, close)
   return nil, err
 end
 
+function cursor_utils.fetch_row_destroy(cur, fetch_mode)
+  local res = {}
+  if fetch_mode then
+    local res, err = cur:fetch(res, fetch_mode)
+    cursor_utils.destroy(cur)
+    if res then return res end
+    return nil, err
+  end
+
+  local n = cursor_utils.colcount(cur)
+  local res, err = cur:fetch(res, 'n')
+  cursor_utils.destroy(cur)
+  if res then return unpack(res, 1, n) end
+  return nil, err
+end
+
 function cursor_utils.fetch_all(cur, fetch_mode, close)
   assert(fetch_mode)
   local t, err = {}
@@ -166,7 +182,7 @@ end
 local connect_utils = {} do
 
 function connect_utils.connected(cnn)
-  if cnn.destroyed then return (not cnn:destroyed()) and cnn:connected() end
+  if cnn.destroyed then return (not cnn:destroyed()) and not not cnn:connected() end
   return not tostring(cnn):find('closed')
 end
 

@@ -412,7 +412,7 @@ function Connection_private:rows(fetch_mode, sql, params)
   if not cur then error(tostring(err)) end
   if 'userdata' ~= type(cur) then error(ERR_MSGS.no_cursor) end
   if cur.setdestroyonclose then cur:setdestroyonclose(true) end
-  self.cursors[cur] = true
+  self.private_.cursors[cur] = true
 
   return cursor_utils.rows(cur, fetch_mode, true)
 end
@@ -444,9 +444,7 @@ function Connection_private:first_row(fetch_mode, sql, params)
   local cur, err = Connection_private.execute(self, sql, params)
   if not cur then return nil, err end
   if 'userdata' ~= type(cur) then return nil, ERR_MSGS.no_cursor end
-  local t = pack_n( cur:fetch(fetch_mode) )
-  cursor_utils.destroy(cur)
-  return unpack_n(t)
+  return cursor_utils.fetch_row_destroy(cur, fetch_mode)
 end
 
 function Connection:first_row (...) return Connection_private.first_row(self, nil,  ...) end
