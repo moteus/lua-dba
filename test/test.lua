@@ -243,6 +243,143 @@ function test_create()
   qry:each(do_test)
   assert_equal(CNN_ROWS, n)
   qry:destroy()
+
+  --------------------------------------------------------
+  sql = "select ID, Name from Agent order by ID"
+  local function do_test(row) 
+    n = n + 1
+    assert_equal(n, to_n(row.ID))
+  end
+
+  n = 0
+  qry = assert(cnn:query())
+  qry:neach(sql, do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql))
+  qry:neach(do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  sql = "select ID, Name from Agent where 555=cast(:ID as INTEGER) order by ID"
+  local par = {ID = 555}
+
+  n = 0
+  qry = assert(cnn:query())
+  qry:neach(sql, par, do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql))
+  qry:neach(par, do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql, par))
+  qry:neach(do_test)
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+end
+
+function test_rows()
+  local sql = "select ID, Name from Agent order by ID"
+  local n
+
+  n = 0
+  qry = assert(cnn:query())
+  for ID, Name in qry:rows(sql) do
+    n = n + 1 assert_equal(n, to_n(ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql))
+  for ID, Name in qry:rows() do
+    n = n + 1 assert_equal(n, to_n(ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  sql = "select ID, Name from Agent where 555=cast(:ID as INTEGER) order by ID"
+  local par = {ID = 555}
+
+  n = 0
+  qry = assert(cnn:query())
+  for ID, Name in qry:rows(sql, par) do
+    n = n + 1 assert_equal(n, to_n(ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql))
+  for ID, Name in qry:rows(par) do
+    n = n + 1 assert_equal(n, to_n(ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql, par))
+  for ID, Name in qry:rows() do
+    n = n + 1 assert_equal(n, to_n(ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  --------------------------------------------------
+
+  sql = "select ID, Name from Agent order by ID"
+
+  n = 0
+  qry = assert(cnn:query())
+  for row in qry:nrows(sql) do
+    n = n + 1 assert_equal(n, to_n(row.ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql))
+  for row in qry:nrows() do
+    n = n + 1 assert_equal(n, to_n(row.ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  sql = "select ID, Name from Agent where 555=cast(:ID as INTEGER) order by ID"
+  local par = {ID = 555}
+
+  n = 0
+  qry = assert(cnn:query())
+  for row in qry:nrows(sql, par) do
+    n = n + 1 assert_equal(n, to_n(row.ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql))
+  for row in qry:nrows(par) do
+    n = n + 1 assert_equal(n, to_n(row.ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
+  n = 0
+  qry = assert(cnn:query(sql, par))
+  for row in qry:nrows() do
+    n = n + 1 assert_equal(n, to_n(row.ID))
+  end
+  assert_equal(CNN_ROWS, n)
+  qry:destroy()
+
 end
 
 function test_prepare()
@@ -278,6 +415,80 @@ end
 function test_destroy()
   qry = assert(cnn:query())
   assert_error(function() cnn:destroy() end)
+end
+
+function test_first()
+  local sql = "select ID, Name from Agent order by ID"
+  qry = cnn:query()
+  local ID, Name = qry:first_row(sql)
+  assert_equal(1, to_n(ID))
+  assert_equal("Agent#1", Name)
+
+  local row
+  row = qry:first_nrow(sql)
+  assert_equal(1, to_n(row.ID))
+  assert_equal("Agent#1", row.Name)
+
+  row = qry:first_irow(sql)
+  assert_equal(1, to_n(row[1]))
+  assert_equal("Agent#1", row[2])
+
+  row = qry:first_trow(sql)
+  assert_equal(1, to_n(row[1]))
+  assert_equal(1, to_n(row.ID))
+  assert_equal("Agent#1", row[2])
+  assert_equal("Agent#1", row.Name)
+
+  assert_equal(CNN_ROWS, to_n(qry:first_value("select count(*) from Agent")))
+  assert_equal(CNN_ROWS, to_n(qry:first_value("select ID from Agent where ID=:ID",{ID=CNN_ROWS})))
+  qry:destroy()
+
+  sql = "select ID, Name from Agent where ID=:ID"
+  local par = {ID=CNN_ROWS}
+  local Agent = "Agent#" .. CNN_ROWS
+
+  qry = cnn:prepare(sql)
+
+  ID, Name = qry:first_row(par)
+  assert_equal(CNN_ROWS, to_n(ID))
+  assert_equal(Agent, Name)
+
+  row = qry:first_nrow(par)
+  assert_equal(CNN_ROWS, to_n(row.ID))
+  assert_equal(Agent, row.Name)
+
+  row = qry:first_irow(par)
+  assert_equal(CNN_ROWS, to_n(row[1]))
+  assert_equal(Agent, row[2])
+
+  row = qry:first_trow(par)
+  assert_equal(CNN_ROWS, to_n(row[1]))
+  assert_equal(CNN_ROWS, to_n(row.ID))
+  assert_equal(Agent, row[2])
+  assert_equal(Agent, row.Name)
+
+  qry:destroy()
+
+  qry = cnn:prepare(sql, par)
+
+  ID, Name = qry:first_row()
+  assert_equal(CNN_ROWS, to_n(ID))
+  assert_equal(Agent, Name)
+
+  row = qry:first_nrow()
+  assert_equal(CNN_ROWS, to_n(row.ID))
+  assert_equal(Agent, row.Name)
+
+  row = qry:first_irow()
+  assert_equal(CNN_ROWS, to_n(row[1]))
+  assert_equal(Agent, row[2])
+
+  row = qry:first_trow()
+  assert_equal(CNN_ROWS, to_n(row[1]))
+  assert_equal(CNN_ROWS, to_n(row.ID))
+  assert_equal(Agent, row[2])
+  assert_equal(Agent, row.Name)
+
 end
 
 for _, str in ipairs{'lsql', 'odbc'} do
