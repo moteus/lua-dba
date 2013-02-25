@@ -26,8 +26,8 @@ local utils       = require "dba.utils"
 local Environment = require "dba.Environment"
 local Connection  = require "dba.Connection"
 
-PARAM_DEFAULT = assert(utils.PARAM_DEFAULT)
-PARAM_NULL    = assert(utils.PARAM_NULL)
+local PARAM_DEFAULT = assert(utils.PARAM_DEFAULT)
+local PARAM_NULL    = assert(utils.PARAM_NULL)
 
 local LIBS = setmetatable({},{__mode='v'})
 
