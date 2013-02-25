@@ -337,7 +337,7 @@ end
 function Connection:exec(...)
   local res, err = Connection_private.execute(self, ...)
   if not res then return nil, err end
-  if 'userdata' == type(res) then
+  if cursor_utils.is_cursor(res) then
     if res.destroy then res:destroy() else res:close() end
     return nil, ERR_MSGS.ret_cursor
   end
@@ -379,7 +379,7 @@ function Connection_private:each(fetch_mode, sql, ...)
   if type(params) ~= 'table' then n, params = 1, nil end
   local cur, err = Connection_private.execute(self, sql, params)
   if not cur then return nil, err end
-  if 'userdata' ~= type(cur) then return nil, ERR_MSGS.no_cursor end
+  if not cursor_utils.is_cursor(cur) then return nil, ERR_MSGS.no_cursor end
   if cur.setdestroyonclose then cur:setdestroyonclose(true) end
 
   return cursor_utils.foreach(cur, fetch_mode, true, select(n, ...))
@@ -414,7 +414,7 @@ function Connection:teach(...) return Connection_private.each(self, 'an', ...) e
 function Connection_private:rows(fetch_mode, sql, params)
   local cur, err = Connection_private.execute(self, sql, params)
   if not cur then error(tostring(err)) end
-  if 'userdata' ~= type(cur) then error(ERR_MSGS.no_cursor) end
+  if not cursor_utils.is_cursor(cur) then error(ERR_MSGS.no_cursor) end
   if cur.setdestroyonclose then cur:setdestroyonclose(true) end
   self.private_.cursors[cur] = true
 
@@ -447,7 +447,7 @@ do -- Connection fetch
 function Connection_private:first_row(fetch_mode, sql, params)
   local cur, err = Connection_private.execute(self, sql, params)
   if not cur then return nil, err end
-  if 'userdata' ~= type(cur) then return nil, ERR_MSGS.no_cursor end
+  if not cursor_utils.is_cursor(cur) then return nil, ERR_MSGS.no_cursor end
   return cursor_utils.fetch_row_destroy(cur, fetch_mode)
 end
 
@@ -481,7 +481,7 @@ end
 function Connection:fetch_all(fetch_mode, sql, params)
   local cur, err = Connection_private.execute(self, sql, params)
   if not cur then return nil, err end
-  if 'userdata' ~= type(cur) then return nil, ERR_MSGS.no_cursor end
+  if not cursor_utils.is_cursor(cur) then return nil, ERR_MSGS.no_cursor end
   if cur.setdestroyonclose then cur:setdestroyonclose(true) end
   return cursor_utils.fetch_all(cur, fetch_mode, true)
 end

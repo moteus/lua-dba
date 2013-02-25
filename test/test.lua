@@ -11,15 +11,22 @@ local CreateConnect = {
     local dba = require "dba.luasql".load('sqlite3')
     return dba.Connect(":memory:")
   end;
+
+  odbclsql = function()
+    local dba = require "dba"
+    local luasql = require "odbc.luasql"
+    dba = dba.load(luasql.odbc)
+    return dba.Connect("SQLite3memory")
+  end
 }
 
 local CNN_TYPE = 'lsql'
 local CNN_ROWS = 10
 local function init_db(cnn)
   local fmt = string.format
-  cnn:exec"create table Agent(ID INTEGER PRIMARY KEY, Name char(32))"
+  assert(cnn:exec"create table Agent(ID INTEGER PRIMARY KEY, Name char(32))")
   for i = 1, CNN_ROWS do
-    cnn:exec(fmt("insert into Agent(ID,NAME)values(%d, 'Agent#%d')", i, i))
+    assert(cnn:exec(fmt("insert into Agent(ID,NAME)values(%d, 'Agent#%d')", i, i)))
   end
 end
 
@@ -491,7 +498,7 @@ function test_first()
 
 end
 
-for _, str in ipairs{'lsql', 'odbc'} do
+for _, str in ipairs{"odbclsql", 'lsql', 'odbc'} do
   print()
   print("---------------- TEST " .. str)
   CNN_TYPE = str

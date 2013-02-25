@@ -175,6 +175,10 @@ function cursor_utils.fetch_all(cur, fetch_mode, close)
   return t
 end
 
+function cursor_utils.is_cursor(cur)
+  return (type(cur) == 'userdata') or ( (type(cur) == 'table') and not not cur.fetch )
+end
+
 end
 ------------------------------------------------------------------
 

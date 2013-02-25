@@ -396,7 +396,7 @@ function Query:open(sql, param)
 
   local cur, err = Query_private.execute(self, sql, param)
   if not cur then return nil, err end
-  if "userdata" ~= type(cur) then return nil, ERR_MSGS.no_cursor end
+  if not cursor_utils.is_cursor(cur) then return nil, ERR_MSGS.no_cursor end
   self.private_.cur = cur
   return true
 end
@@ -421,7 +421,7 @@ function Query:exec(sql, params)
 
   local res, err = Query_private.execute(self, sql, params)
   if not res then return nil, err end
-  if 'userdata' == type(res) then
+  if cursor_utils.is_cursor(res) then
     res:close()
     return nil, ERR_MSGS.ret_cursor
   end
@@ -544,7 +544,7 @@ function Query_private:first_row(fetch_mode, sql, params)
   end
   local cur, err = Query_private.execute(self, sql, params)
   if not cur then return nil, err end
-  if 'userdata' ~= type(cur) then return nil, ERR_MSGS.no_cursor end
+  if not cursor_utils.is_cursor(cur) then return nil, ERR_MSGS.no_cursor end
 
   return cursor_utils.fetch_row(cur, fetch_mode, true)
 end
@@ -582,7 +582,7 @@ function Query:fetch_all(fetch_mode, sql, params)
   end
   local cur, err = Query_private.execute(self, sql, params)
   if not cur then return nil, err end
-  if 'userdata' ~= type(cur) then return nil, ERR_MSGS.no_cursor end
+  if not cursor_utils.is_cursor(cur) then return nil, ERR_MSGS.no_cursor end
 
   return cursor_utils.fetch_all(cur, fetch_mode)
 end
