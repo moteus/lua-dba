@@ -128,11 +128,9 @@ function Connection:disconnect()
   local cnn = self.private_.cnn
   if not cnn then return true end
 
-  local cur = next(self.private_.cursors)
-  while(cur)do
-    if cur.destroy then cur:destroy() else cur:close() end
+  for cur in pairs(self.private_.cursors) do
+    cursor_utils.destroy(cur)
     self.private_.cursors[cur] = nil
-    cur = next(self.private_.cursors)
   end
 
   if cnn.disconnect then
@@ -338,7 +336,7 @@ function Connection:exec(...)
   local res, err = Connection_private.execute(self, ...)
   if not res then return nil, err end
   if cursor_utils.is_cursor(res) then
-    if res.destroy then res:destroy() else res:close() end
+    cursor_utils.destroy(res)
     return nil, ERR_MSGS.ret_cursor
   end
   return res

@@ -194,6 +194,11 @@ function test_rowsaffected()
   assert_equal(CNN_ROWS, to_n(cnn:first_value("select count(*) from Agent")))
 end
 
+function test_exec()
+  assert_nil(cnn:exec("select ID, Name from Agent order by ID"))
+  assert_number(cnn:exec("update Agent set ID=ID"))
+end
+
 local TEST_NAME = 'Query'
 if _VERSION >= 'Lua 5.2' then  _ENV = lunit.module(TEST_NAME,'seeall')
 else module( TEST_NAME, package.seeall, lunit.testcase ) end

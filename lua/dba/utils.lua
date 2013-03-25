@@ -118,7 +118,7 @@ function cursor_utils.rows(cur, fetch_mode, close)
     end
   end
 
-  local n = cur.colnames and #cur:colnames() or #cur:getcolnames()
+  local n = cursor_utils.colcount(cur)
   return function ()
     local res, err = cur:fetch(res, 'n')
     if res then return unpack(res, 1, n) end
@@ -175,8 +175,16 @@ function cursor_utils.fetch_all(cur, fetch_mode, close)
   return t
 end
 
+local function get(t, k) return t[k] end
+
+local function pget(t, k)
+  local ok, v = pcall(get, t, k)
+  if ok then return v end
+  return nil
+end
+
 function cursor_utils.is_cursor(cur)
-  return (type(cur) == 'userdata') or ( (type(cur) == 'table') and not not cur.fetch )
+  return not not pget(cur, "fetch")
 end
 
 end
