@@ -108,7 +108,7 @@ end}
 --- callback функция для перебора запесей набора.
 -- <br> Если функция возвращает любое значение, то перебор прекращается
 -- и возвращенные(все) значения становятся результатом функции, которая осуществляет перебор.
--- <br> Запись в функцию либо в виде набора параметров либо в виде таблицы.
+-- <br> Запись в функцию передается либо в виде набора параметров либо в виде таблицы.
 -- <br> В функцию может передаватся одна и таже таблица с разными значениями.
 -- @class function
 -- @name callback_function
@@ -119,16 +119,16 @@ end}
 --- Структура, описывающая отдельный драйвер.
 -- @class table
 -- @name driverinfo
--- @field 1 название драйвера
--- @field 2 набор параметров 
--- @see lodbc.Environment.Environment:drivers
+-- @tfield string 1 название драйвера
+-- @tfield table 2 набор параметров 
+-- @see odbc.Environment.Environment:drivers
 
 --- Структура, описывающая отдельный драйвер
 -- @class table
 -- @name dsninfo
--- @field 1 название DSN
--- @field 2 название драйвера
--- @see lodbc.Environment.Environment:datasources
+-- @tfield string 1 название DSN
+-- @tfield string 2 название драйвера
+-- @see odbc.Environment.Environment:datasources
 
 --- Уровни изоляции транзакций
 -- @class table
@@ -138,4 +138,6 @@ end}
 -- @field 3 "TRANSACTION_READ_COMMITTED"
 -- @field 4 "TRANSACTION_REPEATABLE_READ"
 -- @field 5 "TRANSACTION_SERIALIZABLE"
-
+-- @see odbc.Connection.Connection:supports_transaction
+-- @see odbc.Connection.Connection:set_transaction_level
+-- @see odbc.Connection.Connection:get_transaction_level

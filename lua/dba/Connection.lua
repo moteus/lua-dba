@@ -27,11 +27,11 @@ do -- Connection ctor/dtor
 -- 
 -- <br> Созданный объект не подключен к БД. Для подключения необходимо вызвать Connection:connect.
 -- <br> Параметры подключения могут быть установлены позже.
--- @param env - [required] объект Environment 
--- @param own - [required] если true, то передается владение на env.
---              (Этот объект уничтожается вместе с объектом Connection.)
--- @param ... [optional] параметры для подключения к БД.
--- @return объект `Connection`
+-- @tparam[required] Environment env
+-- @tparam[required] boolean own если true, то передается владение на env.
+--  (Этот объект уничтожается вместе с объектом Connection.)
+-- @param[opt] ...  параметры для подключения к БД.
+-- @treturn Connection
 -- @see Environment.Environment:connection
 -- @see Environment.Environment:connect
 -- @see Connection.Connection:connect
@@ -102,8 +102,8 @@ end
 --
 -- Параметры должны быть предоставлены в одном месте. Нельзя указать название БД в конструкторе, 
 -- а логин/пароль при открытии.
--- @param ... [optional] параметры для подключения к БД.
--- @return признак успешности подключения
+-- @param[opt] ... параметры для подключения к БД.
+-- @treturn boolean признак успешности подключения
 -- @see Environment.Environment:connection
 -- @see Environment.Environment:connect
 function Connection:connect(...)
@@ -144,6 +144,7 @@ end
 
 --- Возвращает признак подключения к БД.
 --
+-- @treturn boolean признак наличия активного подключения
 function Connection:connected()
   if not self.private_.cnn then return false end
   return connect_utils.connected(self.private_.cnn)
@@ -155,11 +156,11 @@ end
 ------------------------------------------------------------------
 do -- Connection query 
 
---- Создает новый объект Query.
+--- Создает новый объект `Query`.
 -- 
--- @param sql [optional]
--- @param params [optional]
--- @return объект Query
+-- @tparam[opt] string sql
+-- @tparam[opt] table params 
+-- @treturn Query
 -- @class function
 -- @name Connection:query
 
@@ -169,12 +170,12 @@ function Connection:query(...)
   return Query:new(self, ...)
 end
 
---- Создает новый подготовленный объект Query.
+--- Создает новый подготовленный объект `Query`.
 -- 
--- <br>Если prepare завершается с ошибкой - бъект Query уничтожается
--- @param sql [required] текст запроса
--- @param params [optional] таблица параметров для запроса
--- @return объект Query
+-- <br>Если prepare завершается с ошибкой - бъект `Query` уничтожается
+-- @tparam[required] string sql текст запроса
+-- @tparam[opt] table params таблица параметров для запроса
+-- @treturn Query
 -- @class function
 -- @name Connection:prepare
 
@@ -228,6 +229,7 @@ end
 
 --- Устанавливает режим автоматической фиксации транзакций.
 --
+-- @tparam[required] boolean value 
 function Connection:set_autocommit(value)
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
   return self.private_.cnn:setautocommit(value)
@@ -325,11 +327,14 @@ end
 --- Выполняет запрос который не должен возвращать Recordset.
 --
 -- Если запрос вернул курсор, то он закрывается, но не производится откат транзакции
--- @param sql [required] текст запроса
--- @param params [optional] таблица параметров для запроса
+-- @tparam[required] string sql текст запроса
+-- @param[opt] table params таблица параметров для запроса
 -- @return количество записей задействованных в запросе
 -- @class function
 -- @name Connection:exec
+-- @see Connection:commit
+-- @see Connection:rollback
+-- @see Connection:set_autocommit
 
 --
 function Connection:exec(...)
@@ -351,10 +356,9 @@ do -- Connection iterator
 --- Итератор для перебора Recordset.
 --
 -- Гарантируется закрытие курсора перед завершением вызова
--- @param sql [required] текст запроса
--- @param params [optional] параметры для запроса
--- @param fn [required] callback 
--- @see dba.callback_function
+-- @tparam[required] string sql текст запроса
+-- @tparam[opt] table params параметры для запроса
+-- @tparam[required] dba.callback_function callback
 -- @usage
 -- local sql = 'select ID, NAME from Clients where NAME = :NAME'
 -- db:each(sql, {NAME='ALEX'}, print)
@@ -396,8 +400,8 @@ function Connection:teach(...) return Connection_private.each(self, 'an', ...) e
 -- <br> Итератор для generic for
 -- <br> Гарантируется закрытие курсора по достижении конца или при закрытии подключения.
 -- <br> Перебор продолжается до конца курсора или пока первое поле не будет равно NULL.
--- @param sql [required] текст запроса
--- @param params [optional] параметры для запроса
+-- @tparam[required] string sql текст запроса
+-- @tparam[opt] table params параметры для запроса
 -- @usage
 -- local sql = 'select ID, NAME from Clients where NAME = :NAME'
 -- local params = {NAME='ALEX'}
@@ -439,6 +443,9 @@ do -- Connection fetch
 -- @see Connection:rows
 -- @class function
 -- @name Connection:first_row
+-- @tparam[required] string sql текст запроса
+-- @tparam[opt] table params параметры для запроса
+-- @see Connection:each
 
 
 -- fetch_mode, sql [,params] 
@@ -461,6 +468,13 @@ function Connection:first_trow(...) return Connection_private.first_row(self, 'a
 --
 -- <br> Эквивалентна (Connection:first_row(sql,params)) с учетом проверки на ошибки
 -- @usage local cnt, err = db:first_value('select count(*) from Clients')
+-- @class function
+-- @name Connection:first_value
+-- @tparam[required] string sql текст запроса
+-- @tparam[opt] table params параметры для запроса
+-- @see Connection:first_row
+
+--
 function Connection:first_value(...)
   local t, err = self:first_irow(...)
   if t then return t[1] end
@@ -470,12 +484,12 @@ end
 
 --- Возвращает полный результат запроса
 -- 
--- @param fetch_mode [required] 'a' - именованные записи 'n' - нимерованные записи
--- @param sql [required] текст запроса
--- @param params [optional] таблица параметров для запроса
--- @return массив записей
--- @see Connection:new
--- @see Environment.Environment:connection
+-- @tparam[required] string fetch_mode - 'a' именованные записи
+--  - 'n' нумерованные записи
+-- @tparam[required] string sql текст запроса
+-- @tparam[opt] table params таблица параметров для запроса
+-- @treturn table массив записей
+-- @see Connection:each
 function Connection:fetch_all(fetch_mode, sql, params)
   local cur, err = Connection_private.execute(self, sql, params)
   if not cur then return nil, err end

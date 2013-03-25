@@ -1,6 +1,6 @@
 --- Extend @{Environment.Environment|Environment} class with ODBC specific function
 -- @class module
--- @name lodbc.Environment
+-- @name odbc.Environment
 
 local utils       = require "dba.utils"
 local Environment = require "dba.Environment"
@@ -9,11 +9,9 @@ local ERR_MSGS      = assert(utils.ERR_MSGS)
 
 --- Возвращает список установленных в системе драйверов ODBC
 -- 
--- @param fn [optional] callback 
--- @return список драйверов 
--- @see dba.callback_function
--- @see dba.driverinfo 
--- @see Environment.Environment
+-- @tparam[opt] dba.callback_function fn 
+-- @treturn {dba.driverinfo,...} если не указана callback функция
+-- @see dba.driverinfo
 function Environment:drivers(fn)
   assert(self.private_.env)
   if not self.private_.env.getdrivers then return nil, ERR_MSGS.not_support end
@@ -23,10 +21,9 @@ end
 
 --- Возвращает массив DSN 
 -- 
--- @param fn [optional] callback 
--- @return - массив таблиц (dsninfo)
--- @see dba.callback_function
--- @see dba.dsninfo 
+-- @tparam[opt] dba.callback_function fn 
+-- @treturn {dba.dsninfo,...} если не указана callback функция
+-- @see dba.dsninfo
 function Environment:datasources(fn)
   assert(self.private_.env)
   if not self.private_.env.getdatasources then return nil, ERR_MSGS.not_support end

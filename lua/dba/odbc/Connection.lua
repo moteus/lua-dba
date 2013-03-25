@@ -1,6 +1,6 @@
 --- Extend @{Connection.Connection|Connection} class with ODBC specific function
 -- @class module
--- @name lodbc.Connection
+-- @name odbc.Connection
 
 local utils       = require "dba.utils"
 local Connection  = require "dba.Connection"
@@ -127,153 +127,139 @@ make_catalog_fn('column_privileges','columnprivileges')
 
 --- Возвращает список поддерживаемых типов данных.
 --
--- @param tcode [optional] numeric type code
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] number tcode type code
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:typeinfo
 
 --- Возвращает список поддерживаемых типов таблиц.
 --
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:tabletypes
 
 --- Возвращает список схем БД.
 --
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:schemas
 
 --- Возвращает список каталогов.
 --
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:catalogs
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional]
--- @param tableName [optional]
--- @param unique [optional] boolean
--- @param reserved [optional] boolean
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] string catalog только если драйвер поддерживат каталоги
+-- @tparam[opt] string schema
+-- @tparam[opt] string tableName
+-- @tparam[opt] boolean unique 
+-- @tparam[opt] boolean reserved 
+-- @tparam[opt] dba.callback_function fn 
+-- @treturn table список записей
 -- @class function
 -- @name Connection:statistics 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional]
--- @param tableName [optional]
--- @param types [optional]
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] string catalog только если драйвер поддерживат каталоги
+-- @tparam[opt] string schema 
+-- @tparam[opt] string tableName 
+-- @tparam[opt] string types 
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:tables 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional]
--- @param tableName [optional]
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] string catalogтолько если драйвер поддерживат каталоги
+-- @tparam[opt] string schema
+-- @tparam[opt] string tableName
+-- @tparam[opt] fdba.callback_function fn 
+-- @treturn table список записей
 -- @class function
 -- @name Connection:table_privileges
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional]
--- @param tableName [optional]
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] string catalog только если драйвер поддерживат каталоги
+-- @tparam[opt] string schema
+-- @tparam[opt] string tableName
+-- @tparam[opt] dba.callback_function fn 
+-- @treturn table список записей
 -- @class function
 -- @name Connection:primary_keys 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional]
--- @param tableName [optional]
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] string catalog только если драйвер поддерживат каталоги
+-- @tparam[opt] string schema
+-- @tparam[opt] string tableName
+-- @tparam[opt] dba.callback_function fn 
+-- @treturn table список записей
 -- @class function
 -- @name Connection:index_info 
 
 ---
--- @param pc [optional] primary catalog (только если драйвер поддерживат каталоги)
--- @param ps [optional] primary schema  
--- @param pt [optional] primary table   
--- @param fc [optional] foreign catalog (только если драйвер поддерживат каталоги)
--- @param fs [optional] foreign schema  
--- @param ft [optional] foreign table   
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] string pc primary catalog (только если драйвер поддерживат каталоги)
+-- @tparam[opt] string ps primary schema
+-- @tparam[opt] string pt primary table
+-- @tparam[opt] string fc foreign catalog (только если драйвер поддерживат каталоги)
+-- @tparam[opt] string fs foreign schema
+-- @tparam[opt] string ft foreign table
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:crossreference
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional] 
--- @param tableName [optional] 
--- @param columnName [optional] 
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] string catalog только если драйвер поддерживат каталоги
+-- @tparam[opt] string schema
+-- @tparam[opt] string tableName
+-- @tparam[opt] string columnName
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:columns 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional] 
--- @param tableName [optional] 
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] string catalog только если драйвер поддерживат каталоги
+-- @tparam[opt] string schema
+-- @tparam[opt] string tableName
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:special_columns 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional] 
--- @param procName [optional]  
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @param[opt] string catalog только если драйвер поддерживат каталоги
+-- @param[opt] string schema
+-- @param[opt] string procName
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:procedures 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional] 
--- @param procName [optional]   
--- @param colName [optional]   
--- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @param[opt] string catalog только если драйвер поддерживат каталоги
+-- @param[opt] string schema
+-- @param[opt] string procName
+-- @param[opt] string colName
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:procedure_columns 
 
 ---
--- @param catalog [optional] только если драйвер поддерживат каталоги
--- @param schema [optional] 
--- @param tableName [optional] 
--- @param columnName [optional] 
+-- @param[opt] string catalog только если драйвер поддерживат каталоги
+-- @param[opt] string schema
+-- @param[opt] string tableName
+-- @param[opt] string columnName
 -- @param fn [optional] callback
--- @return список записей
--- @see dba.callback_function
+-- @tparam[opt] dba.callback_function fn
+-- @treturn table список записей
 -- @class function
 -- @name Connection:column_privileges 
 
@@ -291,7 +277,7 @@ function Connection:dbmsname()
   return self.private_.cnn:dbmsname()
 end
 
----
+--- ???
 --
 --
 function Connection:drvname()
@@ -331,7 +317,7 @@ function Connection:username()
   return self.private_.cnn:userName()
 end
 
----
+--- ???
 --
 --
 function Connection:set_catalog(value)
@@ -339,7 +325,7 @@ function Connection:set_catalog(value)
   return self.private_.cnn:setcatalog(value)
 end
 
----
+--- ???
 --
 --
 function Connection:get_catalog()
@@ -347,7 +333,7 @@ function Connection:get_catalog()
   return self.private_.cnn:getcatalog()
 end
 
----
+--- ???
 --
 --
 function Connection:set_readonly(value)
@@ -355,7 +341,7 @@ function Connection:set_readonly(value)
   return self.private_.cnn:setreadonly(value)
 end
 
----
+--- ???
 --
 --
 function Connection:get_readonly()
@@ -363,7 +349,7 @@ function Connection:get_readonly()
   return self.private_.cnn:getreadonly()
 end
 
----
+--- ???
 --
 --
 function Connection:set_trace_file(value)
@@ -371,7 +357,7 @@ function Connection:set_trace_file(value)
   return self.private_.cnn:settracefile(value)
 end
 
----
+--- ???
 --
 --
 function Connection:get_trace_file()
@@ -379,8 +365,7 @@ function Connection:get_trace_file()
   return self.private_.cnn:gettracefile()
 end
 
-
----
+--- ???
 --
 --
 function Connection:set_trace(value)
@@ -388,7 +373,7 @@ function Connection:set_trace(value)
   return self.private_.cnn:settrace(value)
 end
 
----
+--- ???
 --
 --
 function Connection:get_trace()
@@ -396,7 +381,7 @@ function Connection:get_trace()
   return self.private_.cnn:gettrace()
 end
 
----
+--- ???
 --
 --
 function Connection:supports_catalg_name()
@@ -416,8 +401,9 @@ local TRANSACTION_LEVEL = {
 for i = 1, #TRANSACTION_LEVEL do TRANSACTION_LEVEL[ TRANSACTION_LEVEL[i] ] = i end
 
 --- Проверяет поддерживает ли драйвер транзакции.
+--
 -- <br> Возможна проверка определенного уровня изоляции
--- @param lvl [optional] уровень изоляции транзакции (число/строка)
+-- @tparam[opt] string|number lvl уровень изоляции транзакции
 -- @see dba.transaction_level
 function Connection:supports_transaction(lvl)
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
@@ -433,8 +419,10 @@ function Connection:supports_transaction(lvl)
 end
 
 --- Возвращает уровень транзакций по умолчанию для прдключения.
--- @return числовое значение 
--- @return строковое значение
+--
+-- @treturn number значение
+-- @treturn string название
+-- @see dba.transaction_level
 function Connection:default_transaction()
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
   local lvl, err = self.private_.cnn:getDefaultTransactionIsolation()
@@ -443,8 +431,9 @@ function Connection:default_transaction()
 end
 
 --- Устанавливает текущий уровень транзакции для прдключения.
--- @param lvl [optional] уровень изоляции транзакции (число/строка). Если nil, то устанавливет значение по умолчанию.
--- 
+--
+-- @tparam[opt] string|number lvl уровень изоляции транзакции
+-- @see dba.transaction_level
 function Connection:set_transaction_level(lvl)
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
 
@@ -463,8 +452,9 @@ function Connection:set_transaction_level(lvl)
 end
 
 --- Возвращает текущий уровень транзакции для прдключения.
--- @return числовое значение 
--- @return строковое значение
+-- @treturn number значение
+-- @treturn string название
+-- @see dba.transaction_level
 function Connection:get_transaction_level()
   if not self:connected() then return nil, ERR_MSGS.cnn_not_opened end
 
@@ -489,7 +479,7 @@ end
 
 --- Устанавливает таймоут для подключения к БД
 -- 
--- @param ms [optional] - интервал в миллисекундах. nil не устанавливать.
+-- @tparam[opt] number ms интервал в миллисекундах. nil не устанавливать.
 -- @return - true
 function Connection:set_login_timeout(ms)
   assert(self.private_.cnn)
@@ -500,7 +490,7 @@ end
 
 --- Возвращает таймоут для подключения к БД
 -- 
--- @return - интервал в миллисекундах. nil не устанавленно
+-- @treturn number интервал в миллисекундах. nil не устанавленно.
 function Connection:get_login_timeout()
   assert(self.private_.env)
   local ms = self.private_.cnn:getlogintimeout(ms or -1)

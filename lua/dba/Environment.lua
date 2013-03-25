@@ -61,11 +61,11 @@ do -- Environment connection
 --
 -- @class function
 -- @name Environment:connection
--- @param dsn [optional]  название DSN
--- @param login [optional] 
--- @param password [optional] 
--- @param autocommit [optional] 
--- @return объект Connection
+-- @param dbname название БД. (для ODBC это DSN)
+-- @string[opt] login
+-- @string[optchain] password
+-- @tparam[opt=true] boolean autocommit
+-- @treturn Connection 
 -- @usage local db = env:connection('demo','DBA','sql',false)
 -- @usage local db = env:connection('demo',false) --Логин и пароль опущены, но autocommit установлен
 
@@ -73,10 +73,10 @@ do -- Environment connection
 -- 
 -- @class function
 -- @name Environment:connection
--- @param params таблица для формирования строки подключения
--- @param autocommit
--- @return объект Connection 
--- @return строка подключения
+-- @tparam table params таблица для формирования строки подключения
+-- @tparam[opt=true] boolean autocommit
+-- @treturn Connection
+-- @treturn string строка подключения
 -- @usage local db = env:connection{DSN='demo',UID='DBA',PWD='sql'}
 
 --
