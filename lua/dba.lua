@@ -1,25 +1,25 @@
 --- Модуль lua-dba
 -- @class module
 -- @name dba
---
--- @usage
--- local odbc = require "dba.odbc"
--- local db = assert(odbc.Connect{dsn='demodb'})
--- 
--- sql_text = [[...]]
--- params = { ... }
--- db:each(sql_text,params,function(row) ... end)
--- 
--- 
--- local qry = db:prepare([[insert ...]])
--- for ... do
---   qry:exec{ some params }
--- end
--- qry:destroy()
--- 
--- 
--- db:destroy()
---
+--[=[-------------------------------------------------------------
+@usage
+local odbc = require "dba.lodbc"
+local db = assert(odbc.Connect{dsn='demodb'})
+
+sql_text = [[...]]
+params = { ... }
+db:each(sql_text,params,function(row) ... end)
+
+
+local qry = db:prepare([[insert ...]])
+for ... do
+  qry:exec{ some params }
+end
+qry:destroy()
+
+
+db:destroy()
+--]=]-------------------------------------------------------------
 
 
 local utils       = require "dba.utils"

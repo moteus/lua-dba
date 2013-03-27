@@ -1,4 +1,14 @@
 local CreateConnect = {
+  odbcdba = function()
+    local dba = require "odbc.dba"
+    local cnn, err = dba.connect{
+      Driver   = "SQLite3 ODBC Driver";
+      Database = ":memory:";
+    }
+    if cnn then cnn:setautoclosestmt(true) end
+    return cnn, err
+  end;
+
   odbc = function()
     local dba = require "dba.odbc"
     return dba.Connect{
@@ -56,8 +66,8 @@ end
 function test_reconnect()
   assert_true(cnn:connected())
   assert_true(cnn:disconnect())
-  assert_false(cnn:connected())
-  assert_true(cnn:connect())
+  assert_false(not not cnn:connected())
+  assert_true(not not cnn:connect())
 end
 
 function test_each()
@@ -251,7 +261,8 @@ function test_create()
   qry:destroy()
 
   n = 0
-  qry = assert(cnn:query(sql, par))
+  qry = assert(cnn:query(sql))
+  assert_true(qry:bind(par))
   qry:each(do_test)
   assert_equal(CNN_ROWS, n)
   qry:destroy()
@@ -291,7 +302,8 @@ function test_create()
   qry:destroy()
 
   n = 0
-  qry = assert(cnn:query(sql, par))
+  qry = assert(cnn:query(sql))
+  assert_true(qry:bind(par))
   qry:neach(do_test)
   assert_equal(CNN_ROWS, n)
   qry:destroy()
@@ -338,7 +350,8 @@ function test_rows()
   qry:destroy()
 
   n = 0
-  qry = assert(cnn:query(sql, par))
+  qry = assert(cnn:query(sql))
+  assert_true(qry:bind(par))
   for ID, Name in qry:rows() do
     n = n + 1 assert_equal(n, to_n(ID))
   end
@@ -385,7 +398,8 @@ function test_rows()
   qry:destroy()
 
   n = 0
-  qry = assert(cnn:query(sql, par))
+  qry = assert(cnn:query(sql))
+  assert_true(qry:bind(par))
   for row in qry:nrows() do
     n = n + 1 assert_equal(n, to_n(row.ID))
   end
@@ -418,7 +432,8 @@ function test_prepare()
   qry:destroy()
 
   n = 0
-  qry = assert(cnn:prepare(sql, par))
+  qry = assert(cnn:prepare(sql))
+  assert_true(qry:bind(par))
   qry:each(do_test)
   assert_equal(CNN_ROWS, n)
   qry:destroy()
@@ -426,7 +441,16 @@ end
 
 function test_destroy()
   qry = assert(cnn:query())
-  assert_error(function() cnn:destroy() end)
+  assert_true(qry:closed())
+  assert_false(qry:destroyed())
+  qry:open("select ID, Name from Agent order by ID")
+  assert_false(qry:closed())
+  assert_false(qry:destroyed())
+  assert_pass(function() cnn:destroy() end)
+  assert_pass(function() qry:closed()  end)
+  assert_true(qry:closed())
+  assert_true(qry:destroyed())
+  assert_pass(function() qry:destroy() end)
 end
 
 function test_first()
@@ -451,8 +475,10 @@ function test_first()
   assert_equal("Agent#1", row[2])
   assert_equal("Agent#1", row.Name)
 
-  assert_equal(CNN_ROWS, to_n(qry:first_value("select count(*) from Agent")))
-  assert_equal(CNN_ROWS, to_n(qry:first_value("select ID from Agent where ID=:ID",{ID=CNN_ROWS})))
+  local v = assert(qry:first_value("select count(*) from Agent"))
+  assert_equal(CNN_ROWS, to_n(v))
+  local v = assert(qry:first_value("select ID from Agent where ID=:ID",{ID=CNN_ROWS}))
+  assert_equal(CNN_ROWS, to_n(v))
   qry:destroy()
 
   sql = "select ID, Name from Agent where ID=:ID"
@@ -481,7 +507,8 @@ function test_first()
 
   qry:destroy()
 
-  qry = cnn:prepare(sql, par)
+  qry = cnn:prepare(sql)
+  assert_true(qry:bind(par))
 
   ID, Name = qry:first_row()
   assert_equal(CNN_ROWS, to_n(ID))
@@ -503,7 +530,8 @@ function test_first()
 
 end
 
-for _, str in ipairs{"odbclsql", 'lsql', 'odbc'} do
+for _, str in ipairs{"odbcdba", "odbclsql", 'lsql'} do --, 'odbc'} do
+--for _, str in ipairs{"odbclsql"} do 
   print()
   print("---------------- TEST " .. str)
   CNN_TYPE = str

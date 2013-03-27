@@ -40,6 +40,7 @@ function Query:new(cnn, sql, params)
       stmt = stmt;
     }
   },self)
+  cnn.private_.cursors[t] = true
 
   if sql then
     local ok, err = t:set_sql(sql)
@@ -65,10 +66,13 @@ end
 -- @see Connection.Connection:query
 -- @see Connection.Connection:prepare
 function Query:destroy()
+  if self:destroyed() then return true end
+
   self:close()
   if self.private_.stmt then
     self.private_.stmt:destroy()
   end
+  self.private_.cnn.private_.cursors[self] = nil
   self.private_.stmt = nil
   self.private_.cnn  = nil
   return true
@@ -92,6 +96,12 @@ function Query:closed()
   local cur = self.private_.cur
   if not cur then return true end
   return cursor_utils.closed(cur)
+end
+
+--- Возвращает статус объекта.
+-- 
+function Query:destroyed()
+  return not self.private_.cnn
 end
 
 --- Возвращает статус курсора.
