@@ -133,11 +133,11 @@ end}
 --- Уровни изоляции транзакций
 -- @class table
 -- @name transaction_level
--- @field 1 "TRANSACTION_NONE"
--- @field 2 "TRANSACTION_READ_UNCOMMITTED"
--- @field 3 "TRANSACTION_READ_COMMITTED"
--- @field 4 "TRANSACTION_REPEATABLE_READ"
--- @field 5 "TRANSACTION_SERIALIZABLE"
+-- @field 1 "NONE"
+-- @field 2 "READ_UNCOMMITTED"
+-- @field 3 "READ_COMMITTED"
+-- @field 4 "REPEATABLE_READ"
+-- @field 5 "SERIALIZABLE"
 -- @see odbc.Connection.Connection:supports_transaction
 -- @see odbc.Connection.Connection:set_transaction_level
 -- @see odbc.Connection.Connection:get_transaction_level

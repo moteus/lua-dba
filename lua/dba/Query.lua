@@ -117,6 +117,13 @@ function Query:handle()
   return self.private_.stmt
 end
 
+--- Возвращает родительский объект `Connection`.
+-- 
+-- @treturn Connection
+function Query:connection()
+  return self.private_.cnn
+end
+
 end
 ------------------------------------------------------------------
 

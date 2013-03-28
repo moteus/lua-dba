@@ -83,6 +83,13 @@ function Connection:handle()
   return self.private_.cnn
 end
 
+--- Возвращает родительский объект `Environment`
+--
+-- @treturn Environment
+function Connection:environment()
+  return self.private_.env
+end
+
 end
 ------------------------------------------------------------------
 
