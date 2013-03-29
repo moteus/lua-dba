@@ -76,6 +76,12 @@ function Connection:destroy()
   return true
 end
 
+--- Возвращает статус объекта.
+-- 
+function Connection:destroyed()
+  return not self.private_.env
+end
+
 --- Возвращает плотформозависимый дескриптор.
 -- 
 -- @return handle

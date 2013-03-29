@@ -44,6 +44,12 @@ function Environment:destroy()
   return true
 end
 
+--- Возвращает статус объекта.
+-- 
+function Environment:destroyed()
+  return not not self.private_.env
+end
+
 --- Возвращает плотформозависимый дескриптор.
 -- 
 -- @return handle
