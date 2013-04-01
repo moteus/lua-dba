@@ -600,10 +600,11 @@ function Query:fetch_all(fetch_mode, sql, params)
     assert(params == nil)
     params, sql = sql
   end
-  local cur, err = Query_private.execute(self, sql, params)
-  if not cur then return nil, err end
-  if not cursor_utils.is_cursor(cur) then return nil, ERR_MSGS.no_cursor end
 
+  local ok, err = self:open(sql, params)
+  if not ok then return nil, err end
+
+  local cur = assert(self.private_.cur)
   return cursor_utils.fetch_all(cur, fetch_mode)
 end
 
